@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:juridentt/Contact/chat_page.dart';
 import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/general/login.dart';
 import 'package:juridentt/features/client_search/widgets.dart';
@@ -8,7 +9,6 @@ import 'package:juridentt/hamburgerMenu/faq.dart';
 import 'package:juridentt/hamburgerMenu/feedback.dart';
 import 'package:juridentt/hamburgerMenu/terms.dart';
 import 'package:provider/provider.dart';
-
 
 class HamburgerIcon extends StatefulWidget {
   static const String routename = '/hamburger';
@@ -168,12 +168,17 @@ class _HamburgerIconState extends State<HamburgerIcon> {
                 },
               ),
             ),
-           InkWell(
+            InkWell(
                 onTap: () {
                   Navigator.pushNamed(context, '/contactus');
                 },
                 child: const CustomListTile(title: "Contact us")),
-            const CustomListTile(title: "Support Chat"),
+            InkWell(onTap: () {
+              // Navigator.pushNamed(context, 'chat page');
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ChatPage();
+              },));
+            } ,child: const CustomListTile(title: "Support Chat")),
             InkWell(
               onTap: () {
                 Navigator.pushNamed(context, FAQ.routename);
@@ -194,9 +199,13 @@ class _HamburgerIconState extends State<HamburgerIcon> {
               child: InkWell(
                 onTap: () {
                   FirebaseAuth.instance.signOut();
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-                    return LoginScreen();
-                  },), (route) => false);
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                     MaterialPageRoute(builder: (context) {
+                      return const LoginScreen();
+                    },
+                  ),(route) {
+                    return false;
+                  },);
                 },
                 child: Container(
                   height: screenHeight * 0.055,

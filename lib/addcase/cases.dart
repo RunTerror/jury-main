@@ -167,6 +167,7 @@ class _CasePageState extends State<CasePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      
       appBar: AppBar(
         iconTheme: IconThemeData(color: themeProvider.ham),
         centerTitle: true,

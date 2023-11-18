@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:juridentt/bookmarks/bookmarkspage.dart';
+import 'package:juridentt/constants.dart';
 import 'package:juridentt/widgets/case_card2_new.dart';
 import 'package:provider/provider.dart';
 
@@ -168,6 +169,7 @@ class _MyfilesState extends State<Myfiles> {
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.black,
         body: Container(
+          height: double.infinity,
           decoration:
               BoxDecoration(gradient: themeProvider.scaffoldGradientscrol),
           child: SingleChildScrollView(
@@ -191,16 +193,10 @@ class _MyfilesState extends State<Myfiles> {
                 ),
                 Transform(
                   transform: Matrix4.translationValues(-130, 25, 0),
-                  child: const Text(
+                  child: Text(
                     "My Files",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xffC99F4A),
-                      fontSize: 26,
-                      fontFamily: 'Satoshi',
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                    ),
+                    style: Constants.satoshiYellowNormal22
                   ),
                 ),
                 SizedBox(height: 60.h),
@@ -210,7 +206,7 @@ class _MyfilesState extends State<Myfiles> {
                   decoration: const ShapeDecoration(
                     color: Colors.black,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Color(0xFFFAFAFA), width: 0),
+                      // side: BorderSide(color: Color(0xFFFAFAFA), width: 0),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
@@ -218,98 +214,88 @@ class _MyfilesState extends State<Myfiles> {
                     ),
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Transform(
-                            transform: Matrix4.translationValues(30, 30, 0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const BookmarksPage(),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const BookmarksPage(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                fixedSize: Size(132.w, 38.h),
+                                backgroundColor: const Color(0xFFC99F4A)),
+                            child: Row(
+                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset("assets/images/bookmark.png"),
+                                const Text(
+                                  'Bookmarks',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontFamily: 'Satoshi',
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  fixedSize: Size(130.w, 38.h),
-                                  backgroundColor: const Color(0xFFC99F4A)),
-                              child: Row(
-                                children: [
-                                  Image.asset("assets/images/bookmark.png"),
-                                  SizedBox(
-                                    width: 7.w,
-                                  ),
-                                  const Text(
-                                    'Bookmarks',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontFamily: 'Satoshi',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(width: 65.w),
-                          Transform(
-                            transform: Matrix4.translationValues(10, 30, 0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: Size(93.w, 35.h),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(93.w, 35.h),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: const Color(0xFFC99F4A),
+                            ),
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset("assets/images/filter.png"),
+                                const Text(
+                                  'Filter',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontFamily: 'Satoshi',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: Size(90.w, 38.h),
+                                backgroundColor: const Color(0xFFC99F4A),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
+                                )),
+                            child: Row(
+                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset("assets/images/sort.png"),
+                                const Text(
+                                  'Sort',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontFamily: 'Satoshi',
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                                backgroundColor: const Color(0xFFC99F4A),
-                              ),
-                              onPressed: () {},
-                              child: Row(
-                                children: [
-                                  Image.asset("assets/images/filter.png"),
-                                  SizedBox(width: 6.w),
-                                  const Text(
-                                    'Filter',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontFamily: 'Satoshi',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Transform(
-                            transform: Matrix4.translationValues(15, 30, 0),
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(90.w, 38.h),
-                                  backgroundColor: const Color(0xFFC99F4A),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                              child: Row(
-                                children: [
-                                  Image.asset("assets/images/sort.png"),
-                                  SizedBox(width: 6.w),
-                                  const Text(
-                                    'Sort',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontFamily: 'Satoshi',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              ],
                             ),
                           ),
                         ],

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:juridentt/addcase/cases.dart';
@@ -8,31 +9,39 @@ import 'package:juridentt/hamburgerMenu/editprofile.dart';
 import 'package:juridentt/news/news.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-class PersistentNavbar extends StatelessWidget {
+class PersistentNavbar extends StatefulWidget {
   PersistentNavbar({
     super.key,
   });
+
+  @override
+  State<PersistentNavbar> createState() => _PersistentNavbarState();
+}
+
+class _PersistentNavbarState extends State<PersistentNavbar> {
   final controller = PersistentTabController(initialIndex: 0);
+
   final themeProvider = ThemeProvider();
+
+  void hidenavbar() {}
 
   @override
   Widget build(BuildContext context) {
-    return PersistentTabView(
+    return Scaffold(
+        bottomNavigationBar: PersistentTabView(
       context,
       controller: controller,
-      floatingActionButton: const SizedBox(),
+      // floatingActionButton: const SizedBox(),
       screens: _buildScreens(),
       items: _navBarsItems(themeProvider),
       backgroundColor: themeProvider.hamcontainer,
       navBarStyle: NavBarStyle.style15, // Adjust the style as needed
       confineInSafeArea: false,
       handleAndroidBackButtonPress: true,
-      hideNavigationBarWhenKeyboardShows: false,
+      hideNavigationBarWhenKeyboardShows: true,
       resizeToAvoidBottomInset: false,
       hideNavigationBar: false,
-
       stateManagement: true,
-
       screenTransitionAnimation: const ScreenTransitionAnimation(
         animateTabTransition: true,
         curve: Curves.bounceIn,
@@ -41,7 +50,7 @@ class PersistentNavbar extends StatelessWidget {
         borderRadius: BorderRadius.only(
             topRight: Radius.circular(15.r), topLeft: Radius.circular(15.r)),
       ),
-    );
+    ));
   }
 
   List<Widget> _buildScreens() {

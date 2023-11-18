@@ -1,12 +1,15 @@
 // ignore_for_file: avoid_print
-
+import 'package:another_flushbar/flushbar.dart';
+import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:juridentt/authentication/client/login/login.dart';
 import 'package:juridentt/authentication/client/signup/signup_otp.dart';
 import 'package:juridentt/constants.dart';
+import 'package:juridentt/provider1.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -20,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController phonenumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late UserProvider userProvider;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final FocusNode _focusNode1 = FocusNode();
@@ -71,16 +75,20 @@ class _SignupScreenState extends State<SignupScreen> {
     print(resp);
     if (resp == 'success') {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Account Created! ')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Account Created! ')));
       // ignore: use_build_context_synchronously
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const LoginScreenClient();
-      },));
-     
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return const LoginScreenClient();
+        },
+      ));
+
       // Navigator.pushNamed(context, '/clientlogin');
     }
     if (resp ==
         'The account already exists for that email. Please try creating a new account.') {
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) {
@@ -104,6 +112,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
     if (resp ==
         'The provided password is too weak. Please choose a stronger password.') {
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) {
@@ -126,6 +135,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
     }
     if (resp == 'Some Error Occurred') {
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) {
@@ -149,96 +159,116 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
+  // void sendOtp()async{
+  //  EmailAuth emailAuth =   EmailAuth(sessionName: "Sample session");
+  //  await emailAuth.sendOtp(recipientMail: 'bansalabhishek7411@gmail.com').then((value) => print(value));
 
-  void signUpUser() async {
-    String resp = await Auth().lawyerregisterUser(
-      profile: '',
-      name: usernameController.text.trim(),
-      location: '',
-      lawyerId: '',
-      clientId: '',
-      mobileNumber: phonenumberController.text.trim(),
-      email: emailController.text.trim(),
-      address: '',
-      type: '',
-      password: passwordController.text.trim(),
-    );
-    if (resp == 'success') {
-      Navigator.pushNamed(context, '/lawyerlogin');
-    }
-    if (resp ==
-        'The account already exists for that email. Please try creating a new account.') {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              'Email already exists. Please create a new account.',
-              textAlign: TextAlign.center,
-              style: Constants.satoshiLightBlackNormal22,
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK', style: Constants.lightBlackBold),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/lawyerlogin');
-                },
-              ),
-            ],
-          );
-        },
+  // }
+
+
+    void signUpUser() async {
+      userProvider.toogleLoading();
+      String resp = await Auth().lawyerregisterUser(
+        profile: '',
+        name: usernameController.text.trim(),
+        location: '',
+        lawyerId: '',
+        clientId: '',
+        mobileNumber: phonenumberController.text.trim(),
+        email: emailController.text.trim(),
+        address: '',
+        type: '',
+        password: passwordController.text.trim(),
       );
-    }
-    if (resp ==
-        'The provided password is too weak. Please choose a stronger password.') {
-      print(resp);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              'The provided password is too weak. Please choose a stronger password.',
-              textAlign: TextAlign.center,
-              style: Constants.satoshiLightBlackNormal22,
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK', style: Constants.lightBlackBold),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/lawyersignup');
-                },
+      if (resp == 'success') {
+        // ignore: use_build_context_synchronously
+        userProvider.toogleLoading();
+        if (context.mounted) {
+          Navigator.pushNamed(context, '/lawyerlogin');
+        }
+      }
+      if (resp ==
+          'The account already exists for that email. Please try creating a new account.') {
+        userProvider.toogleLoading();
+        // ignore: use_build_context_synchronously
+
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                'Email already exists. Please create a new account.',
+                textAlign: TextAlign.center,
+                style: Constants.satoshiLightBlackNormal22,
               ),
-            ],
-          );
-        },
-      );
-    }
-    if (resp == 'Some Error Occurred') {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              'Some Error Occurred. Please try again.',
-              textAlign: TextAlign.center,
-              style: Constants.satoshiLightBlackNormal22,
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK', style: Constants.lightBlackBold),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/lawyersignup');
-                },
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK', style: Constants.lightBlackBold),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/lawyerlogin');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+      if (resp ==
+          'The provided password is too weak. Please choose a stronger password.') {
+        print(resp);
+        // ignore: use_build_context_synchronously
+        userProvider.toogleLoading();
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                'The provided password is too weak. Please choose a stronger password.',
+                textAlign: TextAlign.center,
+                style: Constants.satoshiLightBlackNormal22,
               ),
-            ],
-          );
-        },
-      );
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK', style: Constants.lightBlackBold),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/lawyersignup');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+      if (resp == 'Some Error Occurred') {
+        // ignore: use_build_context_synchronously
+        userProvider.toogleLoading();
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                'Some Error Occurred. Please try again.',
+                textAlign: TextAlign.center,
+                style: Constants.satoshiLightBlackNormal22,
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK', style: Constants.lightBlackBold),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/lawyersignup');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
-  }
 
   @override
   Widget build(BuildContext context) {
+  userProvider = Provider.of<UserProvider>(context, listen: false);    
+
     final size = MediaQuery.of(context).size;
     // final height = size.height;
     // final width = size.width;
@@ -288,6 +318,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             Row(
                               children: [
+                                // TextButton(onPressed: (){
+                                //   sendOtp();
+                                // }, child: Text('press')),
                                 SizedBox(
                                   height: 50.h,
                                   width: 160.w,
@@ -680,62 +713,101 @@ class _SignupScreenState extends State<SignupScreen> {
                                     transform: Matrix4.translationValues(
                                         0.0, -20.0, 0.0),
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          _formKey.currentState!.save();
-                                        }
-                                        if (userType1 == 'lawyer') {
+                                        onPressed: () {
+                                          
+                                          // if (_formKey.currentState!.validate()) {
+                                          //   _formKey.currentState!.save();
+                                          // }
+                                          if (usernameController.text.trim().isEmpty ||
+                                              emailController.text
+                                                  .trim()
+                                                  .isEmpty ||
+                                              passwordController.text
+                                                  .trim()
+                                                  .isEmpty ||
+                                              phonenumberController.text
+                                                  .trim()
+                                                  .isEmpty) {
+                                            Flushbar(
+                                              backgroundColor:
+                                                  const Color(0xFF40A2B6),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(5)),
+                                              isDismissible: true,
+                                              flushbarPosition:
+                                                  FlushbarPosition.BOTTOM,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 10),
+                                              message:
+                                                  "Please fill the remaining fields",
+                                              duration:
+                                                  const Duration(seconds: 3),
+                                            ).show(context);
+                                          } else {
+                                            if (userType1 == 'lawyer') {
+                                              userProvider.toogleLoading();
+                                              signUpUser();
 
-                                          signUpUser();
+                                              // Navigator.pushNamed(
+                                              //   context,
+                                              //   '/lawyersignupotp',
+                                              //   arguments: {
+                                              //     'email': emailController.text,
+                                              //     'password':
+                                              //         passwordController.text,
+                                              //     'mobilenumber':
+                                              //         phonenumberController.text,
+                                              //     'username':
+                                              //         usernameController.text,
+                                              //   },
+                                              // );
+                                            } else {
+                                              SignUpOtpClient();
 
-
-
-                                          // Navigator.pushNamed(
-                                          //   context,
-                                          //   '/lawyersignupotp',
-                                          //   arguments: {
-                                          //     'email': emailController.text,
-                                          //     'password':
-                                          //         passwordController.text,
-                                          //     'mobilenumber':
-                                          //         phonenumberController.text,
-                                          //     'username':
-                                          //         usernameController.text,
-                                          //   },
-                                          // );
-                                        } else {
-
-                                          SignUpOtpClient();
-
-
-                                          // Navigator.pushNamed(
-                                          //   context,
-                                          //   '/clientsignupotp',
-                                          //   arguments: {
-                                          //     'email': emailController.text,
-                                          //     'password':
-                                          //         passwordController.text,
-                                          //     'mobilenumber':
-                                          //         phonenumberController.text,
-                                          //     'username':
-                                          //         usernameController.text,
-                                          //   },
-                                          // );
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Constants.lightblack,
-                                        minimumSize: Size(320.w, 50.h),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
+                                              // Navigator.pushNamed(
+                                              //   context,
+                                              //   '/clientsignupotp',
+                                              //   arguments: {
+                                              //     'email': emailController.text,
+                                              //     'password':
+                                              //         passwordController.text,
+                                              //     'mobilenumber':
+                                              //         phonenumberController.text,
+                                              //     'username':
+                                              //         usernameController.text,
+                                              //   },
+                                              // );
+                                            }
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Constants.lightblack,
+                                          minimumSize: Size(320.w, 50.h),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
                                         ),
-                                      ),
-                                      child: Text(
-                                        "Sign Up",
-                                        style: Constants.satoshiWhite18,
-                                      ),
-                                    ),
+                                        child: Consumer<UserProvider>(
+                                          builder: (context, value, child) {
+                                            print(value.isSignupLoading);
+                                            if (value.isSignupLoading == true) {
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Constants.yellow,
+                                                ),
+                                              );
+                                            }
+                                            return Text(
+                                              "Sign Up",
+                                              style: Constants.satoshiWhite18,
+                                            );
+                                          },
+                                        )),
                                   ),
                                 ],
                               ),
@@ -746,13 +818,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               children: [
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(top: 20.h, bottom: 6.w),
+                                      EdgeInsets.only(top: 20.h, bottom: 6.h),
                                   child: SizedBox(
                                     width: 149.w,
                                     child: Divider(
                                       height: 1,
                                       thickness: 1,
-                                      color: Constants.black,
+                                      color: Constants.yellow,
                                     ),
                                   ),
                                 ),
@@ -762,6 +834,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     "or",
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.left,
+                                    style: TextStyle(color: Colors.yellow),
                                   ),
                                 ),
                                 Padding(
@@ -772,18 +845,19 @@ class _SignupScreenState extends State<SignupScreen> {
                                     child: Divider(
                                       height: 1,
                                       thickness: 1,
-                                      color: Constants.black,
+                                      color: Constants.yellow,
                                       indent: 10,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 3.h, left: 135.w),
+                            Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
                               child: Text(
                                 "Log In with",
-                                style: Constants.satoshiGrey90016,
+                                style: Constants.satoshiYellow14,
                               ),
                             ),
                             Padding(

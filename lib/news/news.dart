@@ -74,6 +74,7 @@ class _NewsPageState extends State<NewsPage> {
   var timestring = "";
   String _getGreeting() {
     var now = DateTime.now();
+    // print(now);
     if (now.hour >= 0 && now.hour < 11) {
       return 'Good Morning';
     } else if (now.hour >= 11 && now.hour < 17) {

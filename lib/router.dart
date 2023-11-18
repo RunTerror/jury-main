@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:juridentt/Contact/chat_page.dart';
 import 'package:juridentt/addcase/cases.dart';
 import 'package:juridentt/addcase/files.dart';
 import 'package:juridentt/addcase/landing_page1.dart';
@@ -323,6 +324,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const HomePage(),
+      );
+
+     case 'chat page':
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const ChatPage(),
       );
 
     default:

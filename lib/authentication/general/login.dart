@@ -1,16 +1,20 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 import 'dart:math';
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:juridentt/constants.dart';
 import 'package:juridentt/models/user.dart';
 import 'package:juridentt/navbar/home_screen.dart';
+import 'package:juridentt/provider1.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:juridentt/client/clientsearchpage.dart';
 
@@ -129,16 +133,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  late UserProvider _userProvider;
+
   void loginUser() async {
+    _userProvider.toogleLoginLoading();
     String res = await Auth().lawyerloginUser(
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     );
 
     if (res == 'success') {
-      Navigator.pushNamed(context, '/lawyerhomescreen');
+       _userProvider.toogleLoginLoading();
+      Navigator.pushNamedAndRemoveUntil(context, '/lawyerhomescreen', (route) {
+        return false;
+      },);
     }
     if (res == 'Incorrect password. Please try again.') {
+       _userProvider.toogleLoginLoading();
       showDialog(
         context: context,
         builder: (context) {
@@ -162,6 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
     if (res == 'User not found. Please create a new account.') {
+       _userProvider.toogleLoginLoading();
       showDialog(
         context: context,
         builder: (context) {
@@ -185,6 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
     if (res == 'Some Error Occurred') {
+       _userProvider.toogleLoginLoading();
       showDialog(
         context: context,
         builder: (context) {
@@ -208,6 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _userProvider=Provider.of<UserProvider>(context);
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -540,6 +554,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   Container(
+                                    padding:const EdgeInsets.only(right: 5),
                                     transform: Matrix4.translationValues(
                                         0.0, -60.0, 0.0),
                                     child: Row(
@@ -573,44 +588,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                             style: Constants.satoshiYellow14,
                                           ),
                                         ),
+                                        const Spacer(),
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.pushNamed(
                                                 context, '/forgetpassword');
                                           },
                                           child: Container(
-                                            height: 20.h,
-                                            width: 115.w,
+                                            // height: 20.h,
                                             margin: EdgeInsets.only(
                                                 left: 9.w, top: 2.h),
-                                            child: Stack(
-                                              alignment: Alignment.topCenter,
-                                              children: [
-                                                Align(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  child: SizedBox(
-                                                    width: 115.w,
-                                                    child: Divider(
-                                                      height: 2,
-                                                      thickness: 2,
-                                                      color: Constants.yellow,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.topCenter,
-                                                  child: Text(
-                                                    "Forgot Password?",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textAlign: TextAlign.left,
-                                                    style: Constants
-                                                        .satoshiYellow14,
-                                                  ),
-                                                ),
-                                              ],
+                                            child: Text(
+                                              "Forgot Password?",
+                                              
+                                              textAlign: TextAlign.left,
+                                              style: Constants
+                                                  .satoshiYellow14,
                                             ),
                                           ),
                                         ),
@@ -619,11 +612,28 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        _formKey.currentState!.save();
-                                      }
+                                      if (emailController.text.trim().isEmpty ||
+                                            emailController.text
+                                                .trim()
+                                                .isEmpty ||
+                                            passwordController.text
+                                                .trim()
+                                                .isEmpty ||
+                                            passwordController.text
+                                                .trim()
+                                                .isEmpty) {
+                                                    Flushbar(
+                                                      backgroundColor:const Color(0xFF40A2B6),
+                                                      borderRadius:const BorderRadius.all(Radius.circular(5)),
+                                                      isDismissible: true,
+                                            flushbarPosition: FlushbarPosition.BOTTOM,
+                                            margin:const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                            message:
+                                                "Please fill the remaining fields",
+                                            duration:const Duration(seconds: 3),
+                                          ).show(context);              
+                                        } else {
                                       if (userType1 == 'lawyer') {
-
                                         loginUser();
                                         // Navigator.pushNamed(
                                         //   context,
@@ -636,8 +646,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         // );
                                       } else {
                                         loginClient();
-
-
                                         // Navigator.pushNamed(
                                         //   context,
                                         //   '/clientloginotp',
@@ -647,7 +655,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         //         passwordController.text,
                                         //   },
                                         // );
-                                      }
+                                      }}
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Constants.lightblack,
@@ -656,10 +664,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                     ),
-                                    child: Text(
+                                    child: Consumer(builder: (context, value, child) {
+                                      if(_userProvider.isLoaginLoading){
+                                        return Center(child: CircularProgressIndicator(color: Constants.orange,),);
+                                      }
+                                      return Text(
                                       "Log in",
                                       style: Constants.satoshiWhite18,
-                                    ),
+                                    );
+                                    },)
                                   ),
                                 ],
                               ),
@@ -704,13 +717,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 5.w, left: 130.h),
+                            Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
                               child: Text(
                                 "Log In with",
                                 style: Constants.satoshiYellow14,
                               ),
                             ),
+                            // Consumer<>(builder: (context, value, child) {
+                              
+                              
+                            // },),
+                            // ),
+                            // const Flex(direction: Axis.vertical),
                             Padding(
                               padding: EdgeInsets.only(top: 13.h, bottom: 5.h),
                               child: Row(
