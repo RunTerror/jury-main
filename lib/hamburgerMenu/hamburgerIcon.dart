@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:juridentt/Bare%20acts/Bare_acts_page.dart';
+import 'package:juridentt/Contact/Gpt_page.dart';
 import 'package:juridentt/Contact/chat_page.dart';
 import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/general/login.dart';
@@ -72,7 +74,7 @@ class _HamburgerIconState extends State<HamburgerIcon> {
         child: ListView(
           children: [
             SizedBox(
-              height: screenHeight * 0.07,
+              height: screenHeight * 0.1,
             ),
             Padding(
               padding: EdgeInsets.only(left: screenWidth * 0.04),
@@ -128,7 +130,17 @@ class _HamburgerIconState extends State<HamburgerIcon> {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, TermsAndConditions.routeName);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const BareActsPage();
+                  },
+                ));
+              },
+              child: const CustomListTile(title: "Bare acts"),
+            ),
+            InkWell(
+              onTap: () {
+                // Navigator.pushNamed(context, TermsAndConditions.routeName);
               },
               child: const CustomListTile(title: "Terms and Conditions"),
             ),
@@ -173,12 +185,16 @@ class _HamburgerIconState extends State<HamburgerIcon> {
                   Navigator.pushNamed(context, '/contactus');
                 },
                 child: const CustomListTile(title: "Contact us")),
-            InkWell(onTap: () {
-              // Navigator.pushNamed(context, 'chat page');
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ChatPage();
-              },));
-            } ,child: const CustomListTile(title: "Support Chat")),
+            InkWell(
+                onTap: () {
+                  // Navigator.pushNamed(context, 'chat page');
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return const ChatPage();
+                    },
+                  ));
+                },
+                child: const CustomListTile(title: "Support Chat")),
             InkWell(
               onTap: () {
                 Navigator.pushNamed(context, FAQ.routename);
@@ -200,12 +216,15 @@ class _HamburgerIconState extends State<HamburgerIcon> {
                 onTap: () {
                   FirebaseAuth.instance.signOut();
                   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                     MaterialPageRoute(builder: (context) {
-                      return const LoginScreen();
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginScreen();
+                      },
+                    ),
+                    (route) {
+                      return false;
                     },
-                  ),(route) {
-                    return false;
-                  },);
+                  );
                 },
                 child: Container(
                   height: screenHeight * 0.055,

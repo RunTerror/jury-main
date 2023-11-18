@@ -508,6 +508,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
     return ScreenUtilInit(
         designSize: const Size(428, 926),
         minTextAdapt: true,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:juridentt/Bare%20acts/Bare_acts_page.dart';
 import 'package:juridentt/Contact/chat_page.dart';
 import 'package:juridentt/addcase/cases.dart';
 import 'package:juridentt/addcase/files.dart';
@@ -38,6 +39,7 @@ import 'navbar.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
+
     case '/first':
       return MaterialPageRoute(
         settings: routeSettings,
@@ -330,6 +332,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const ChatPage(),
+      );
+  
+    case BareActsPage.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const BareActsPage(),
       );
 
     default:
