@@ -59,8 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ));
 
-      // Navigator.pushNamed(context, '/clienthomescreen');
-      // Navigator.pushNamed(context, '/clientsearchpage');
     }
     if (res == 'Incorrect password. Please try again.') {
       showDialog(

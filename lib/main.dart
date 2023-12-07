@@ -423,7 +423,6 @@ import 'package:juridentt/models/user.dart';
 import 'package:firebase_performance/firebase_performance.dart'
     as firebase_performance;
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -500,34 +499,29 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
+      value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
       ),
       child: ScreenUtilInit(
-        designSize: const Size(428, 926),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return MaterialApp(
-              onGenerateRoute: (settings) => generateRoute(settings),
-              debugShowCheckedModeBanner: false,
-              theme: ThemeData.light().copyWith(
-                primaryColor: Colors.blue,
-              ),
-              darkTheme: ThemeData.dark(),
-              themeMode: Provider.of<ThemeProvider>(context).isDarkModeEnabled
-                  ? ThemeMode.dark
-                  : ThemeMode.light,
-              home: const SplashScreen());
-        }),
+          designSize: const Size(428, 926),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) {
+            return MaterialApp(
+                onGenerateRoute: (settings) => generateRoute(settings),
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData.light().copyWith(
+                  primaryColor: Colors.blue,
+                ),
+                darkTheme: ThemeData.dark(),
+                themeMode: Provider.of<ThemeProvider>(context).isDarkModeEnabled
+                    ? ThemeMode.dark
+                    : ThemeMode.light,
+                home: const SplashScreen());
+          }),
     );
   }
 }
-
-
-
-
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -543,39 +537,35 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _getUserType();
+
     Timer(
       const Duration(seconds: 2),
       () {
-        navigate();
+        checkFirstTime();
       },
     );
-    checkFirstTime();
   }
 
   void checkFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('firstTime') ?? true;
 
-    if (isFirstTime) {
-      await prefs.setBool('firstTime', false);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OnboardingScree()),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+    if (context.mounted) {
+      if (isFirstTime) {
+        await prefs.setBool('firstTime', false);
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => OnboardingScree()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => LandingScreen(userType: userType)),
+        );
+      }
     }
-  }
-
-  navigate() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) {
-        return LandingScreen(userType: userType);
-      },
-    ));
   }
 
   _getUserType() async {
@@ -585,16 +575,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider=Provider.of<ThemeProvider>(context);
-    return  Scaffold(
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return Scaffold(
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(color: themeProvider.hamcontainer
-        ),
-        padding:const EdgeInsets.symmetric(horizontal: 120),
-        child: Image.asset('assets/Group 33622.png')
-      ),
+          height: double.infinity,
+          width: double.infinity,
+          decoration: BoxDecoration(color: themeProvider.hamcontainer),
+          padding: const EdgeInsets.symmetric(horizontal: 120),
+          child: Image.asset('assets/Group 33622.png')),
     );
   }
 }
@@ -633,8 +621,6 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 }
-
-
 
 class LandingScreen extends StatefulWidget {
   final String? userType;
