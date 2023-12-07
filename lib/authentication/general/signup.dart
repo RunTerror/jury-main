@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/client/login/login.dart';
 import 'package:juridentt/authentication/general/signupverification.dart';
 import 'package:juridentt/constants.dart';
@@ -15,7 +16,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  final String usertype;
+  const SignupScreen({Key? key, required this.usertype}) : super(key: key);
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -318,20 +320,16 @@ class _SignupScreenState extends State<SignupScreen> {
     final size = MediaQuery.of(context).size;
     // final height = size.height;
     // final width = size.width;
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return SafeArea(
       child: Scaffold(
+        backgroundColor: themeProvider.hamcontainer,
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: Container(
             height: size.height,
             width: size.width,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/bg_blue.png"),
-                // image: AssetImage("assets/background.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
+            decoration: const BoxDecoration(),
             child: Form(
               key: _formKey,
               child: Stack(
@@ -361,96 +359,6 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             SizedBox(
                               height: 20.h,
-                            ),
-                            Row(
-                              children: [
-                                // TextButton(onPressed: (){
-                                //   sendOtp();
-                                // }, child: Text('press')),
-                                SizedBox(
-                                  height: 50.h,
-                                  width: 160.w,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      backgroundColor: userType1 == 'client'
-                                          ? const Color(0xff060125)
-                                          : Colors.white,
-                                      side: BorderSide(
-                                        width: 2,
-                                        color: userType1 == 'client'
-                                            ? const Color(0xff060125)
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        userType1 = 'client';
-                                      });
-                                      print(userType1);
-                                    },
-                                    child: Text(
-                                      "Client",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: userType1 == 'client'
-                                            ? const Color(0XFFc99f4a)
-                                            : Colors.black,
-                                        fontSize: 22.sp,
-                                        fontFamily: 'Satoshi',
-                                        fontWeight: FontWeight.w300,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Transform(
-                                  transform:
-                                      Matrix4.translationValues(-20, 0, 0),
-                                  child: SizedBox(
-                                    height: 50.h,
-                                    width: 160.w,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        backgroundColor: userType1 == 'lawyer'
-                                            ? const Color(0xff060125)
-                                            : Colors.white,
-                                        side: BorderSide(
-                                          width: 2,
-                                          color: userType1 == 'lawyer'
-                                              ? const Color(0xff060125)
-                                              : Colors.white,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          userType1 = 'lawyer';
-                                        });
-                                        print(userType1);
-                                      },
-                                      child: Text(
-                                        "Lawyer",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: userType1 == 'lawyer'
-                                              ? const Color(0XFFc99f4a)
-                                              : Colors.black,
-                                          fontSize: 22.sp,
-                                          fontFamily: 'Satoshi',
-                                          fontWeight: FontWeight.w300,
-                                          fontStyle: FontStyle.normal,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
                             ),
                             Container(
                               height: 479.h,
@@ -482,41 +390,21 @@ class _SignupScreenState extends State<SignupScreen> {
                                     padding: EdgeInsets.only(bottom: 110.h),
                                     child: Row(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, '/login');
-                                          },
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Align(
-                                                alignment: Alignment.center,
-                                                child: Text(
-                                                  "Log In",
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textAlign: TextAlign.left,
-                                                  style: Constants
-                                                      .satoshiLightBlackNormal22,
-                                                ),
+                                        widget.usertype == 'lawyer'
+                                            ? Text(
+                                                "Join as Lawyer",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: Constants
+                                                    .satoshiYellowNormal22,
+                                              )
+                                            : Text(
+                                                "Join as Client",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: Constants
+                                                    .satoshiYellowNormal22,
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 28.h),
-                                          child: Text(
-                                            "Sign Up",
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.left,
-                                            style: Constants
-                                                .satoshiTransparentNormal22Underline,
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -792,7 +680,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                                   const Duration(seconds: 3),
                                             ).show(context);
                                           } else {
-                                            if (userType1 == 'lawyer') {
+                                            if (widget.usertype == 'lawyer') {
                                               print('lawyer signup started');
                                               // userProvider.toogleLoading();
                                               signUpUser();
@@ -858,6 +746,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ],
                               ),
                             ),
+                            const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -906,6 +795,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                 style: Constants.satoshiYellow14,
                               ),
                             ),
+                            const SizedBox(
+                              height: 15,
+                            ),
                             Padding(
                               padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
                               child: Row(
@@ -913,7 +805,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      if (userType1 == 'lawyer') {
+                                      if (widget.usertype == 'lawyer') {
                                         Auth()
                                             .signInWithFacebookLawyer(context);
                                       } else {
@@ -931,7 +823,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     margin: EdgeInsets.only(left: 50.w),
                                     child: GestureDetector(
                                       onTap: () {
-                                        if (userType1 == 'lawyer') {
+                                        if (widget.usertype == 'lawyer') {
                                           print('clicked');
                                           Auth()
                                               .signInWithGoogleLawyer(context);
@@ -952,7 +844,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         left: 50.w, top: 4.h, bottom: 4.h),
                                     child: GestureDetector(
                                       onTap: () {
-                                        if (userType1 == 'lawyer') {
+                                        if (widget.usertype == 'lawyer') {
                                           Auth()
                                               .signInWithTwitterLawyer(context);
                                         } else {
@@ -970,6 +862,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ],
                               ),
                             ),
+                            const Spacer(),
                           ],
                         ),
                       ),

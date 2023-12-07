@@ -37,12 +37,12 @@ import 'navbar.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
-
     case '/':
-      return MaterialPageRoute(builder: (context) {
-        return const SplashScreen();
-        
-      },settings: routeSettings);
+      return MaterialPageRoute(
+          builder: (context) {
+            return const SplashScreen();
+          },
+          settings: routeSettings);
 
     case '/first':
       return MaterialPageRoute(
@@ -69,15 +69,20 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       );
 
     case '/signup':
+      final args = routeSettings.arguments as Map<String, String>;
+      final usertype = args['usertype'] as String;
+
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const signup.SignupScreen(),
+        builder: (_) => signup.SignupScreen(usertype: usertype),
       );
 
     case '/login':
+      final args = routeSettings.arguments as Map<String, dynamic>;
+      final usertype = args['usertype'] as String;
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const login.LoginScreen(),
+        builder: (_) => login.LoginScreen(userType: usertype),
       );
 
     case '/forgetpassword':
@@ -100,13 +105,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
 
     case '/lawyerloginotp':
       final arguments = routeSettings.arguments as Map<String, dynamic>?;
-
       if (arguments != null &&
           arguments.containsKey('useremail') &&
           arguments.containsKey('userpassword')) {
         final useremail = arguments['useremail'] as String;
         final userpassword = arguments['userpassword'] as String;
-
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => LoginOtp(
@@ -329,15 +332,15 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case 'clientsearchpage':
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) =>  const HomePage(),
+        builder: (_) => const HomePage(),
       );
 
-     case 'chat page':
+    case 'chat page':
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (_) => const ChatPage(),
       );
-  
+
     case BareActsPage.routeName:
       return MaterialPageRoute(
         settings: routeSettings,

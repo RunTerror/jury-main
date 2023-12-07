@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/general/verification_page.dart';
 import 'package:juridentt/constants.dart';
 import 'package:juridentt/provider1.dart';
@@ -10,7 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final String userType;
+  const LoginScreen({Key? key,required this.userType}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -222,18 +225,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _userProvider = Provider.of<UserProvider>(context);
     final size = MediaQuery.of(context).size;
+    final themeProvider=Provider.of<ThemeProvider>(context);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        backgroundColor: themeProvider.hamcontainer,
         body: SingleChildScrollView(
           child: Container(
             height: size.height,
             width: size.width,
             decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/bg_blue.png"),
-                fit: BoxFit.cover,
-              ),
+              
             ),
             child: Form(
               key: _formKey,
@@ -264,103 +266,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             SizedBox(
                               height: 20.h,
-                            ),
-                            Row(
-                              children: [
-                                Builder(
-                                  builder: (BuildContext context) {
-                                    return SizedBox(
-                                      height: 50.h,
-                                      width: 160.w,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          backgroundColor: userType1 == 'client'
-                                              ? const Color(0xff060125)
-                                              : Colors.white,
-                                          side: BorderSide(
-                                            width: 2,
-                                            color: userType1 == 'client'
-                                                ? const Color(0xff060125)
-                                                : Colors.white,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            userType1 = 'client';
-                                          });
-                                          print(userType1);
-                                        },
-                                        child: Text(
-                                          "Client",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: userType1 == 'client'
-                                                ? const Color(0XFFc99f4a)
-                                                : Colors.black,
-                                            fontSize: 22.sp,
-                                            fontFamily: 'Satoshi',
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Transform(
-                                  transform:
-                                      Matrix4.translationValues(-20, 0, 0),
-                                  child: Builder(
-                                    builder: (BuildContext context) {
-                                      return SizedBox(
-                                        height: 50.h,
-                                        width: 165.w,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            backgroundColor:
-                                                userType1 == 'lawyer'
-                                                    ? const Color(0xff060125)
-                                                    : Colors.white,
-                                            side: BorderSide(
-                                              width: 2,
-                                              color: userType1 == 'lawyer'
-                                                  ? const Color(0xff060125)
-                                                  : Colors.white,
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              userType1 = 'lawyer';
-                                            });
-                                            print(userType1);
-                                          },
-                                          child: Text(
-                                            "Lawyer",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: userType1 == 'lawyer'
-                                                  ? const Color(0XFFc99f4a)
-                                                  : Colors.black,
-                                              fontSize: 22.sp,
-                                              fontFamily: 'Satoshi',
-                                              fontWeight: FontWeight.w300,
-                                              fontStyle: FontStyle.normal,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
                             ),
                             Container(
                               height: 464.h,
@@ -393,41 +298,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                     padding: EdgeInsets.only(bottom: 160.h),
                                     child: Row(
                                       children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "Log In",
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.left,
-                                                style: Constants
-                                                    .satoshiTransparentNormal22Underline,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, '/signup');
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 28.w, bottom: 2.h),
-                                            child: Text(
-                                              "Sign Up",
+                                        const SizedBox(height: 20,),
+                                   widget.userType=='lawyer'?     Text(
+                                              "Join as Lawyer",
                                               overflow: TextOverflow.ellipsis,
                                               textAlign: TextAlign.left,
                                               style: Constants
-                                                  .satoshiLightBlackNormal22,
+                                                  .satoshiYellowNormal22,
+                                            ): 
+                                              Text(
+                                              "Join as Client",
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.left,
+                                              style: Constants
+                                                  .satoshiYellowNormal22,
                                             ),
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -636,28 +521,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 const Duration(seconds: 3),
                                           ).show(context);
                                         } else {
-                                          if (userType1 == 'lawyer') {
+                                          if (widget.userType == 'lawyer') {
                                             loginUser();
-                                            // Navigator.pushNamed(
-                                            //   context,
-                                            //   '/lawyerloginotp',
-                                            //   arguments: {
-                                            //     'useremail': emailController.text,
-                                            //     'userpassword':
-                                            //         passwordController.text,
-                                            //   },
-                                            // );
                                           } else {
                                             loginClient();
-                                            // Navigator.pushNamed(
-                                            //   context,
-                                            //   '/clientloginotp',
-                                            //   arguments: {
-                                            //     'useremail': emailController.text,
-                                            //     'userpassword':
-                                            //         passwordController.text,
-                                            //   },
-                                            // );
                                           }
                                         }
                                       },
@@ -687,6 +554,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             ),
+                            const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -727,6 +595,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ],
                             ),
+                            
                             Container(
                               width: double.infinity,
                               alignment: Alignment.center,
@@ -735,11 +604,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: Constants.satoshiYellow14,
                               ),
                             ),
-                            // Consumer<>(builder: (context, value, child) {
-
-                            // },),
-                            // ),
-                            // const Flex(direction: Axis.vertical),
                             Padding(
                               padding: EdgeInsets.only(top: 13.h, bottom: 5.h),
                               child: Row(
@@ -747,7 +611,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      if (userType1 == 'lawyer') {
+                                      if (widget.userType == 'lawyer') {
                                         Auth()
                                             .signInWithFacebookLawyer(context);
                                       } else {
@@ -765,7 +629,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     margin: const EdgeInsets.only(left: 50),
                                     child: GestureDetector(
                                       onTap: () async {
-                                        if (userType1 == 'lawyer') {
+                                        if (widget.userType == 'lawyer') {
                                           Auth()
                                               .signInWithGoogleLawyer(context);
                                         }
@@ -786,7 +650,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         left: 50.w, top: 4.h, bottom: 4.h),
                                     child: GestureDetector(
                                       onTap: () {
-                                        if (userType1 == 'lawyer') {
+                                        if (widget.userType == 'lawyer') {
                                           Auth()
                                               .signInWithTwitterLawyer(context);
                                         } else {
@@ -804,6 +668,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             ),
+                            const Spacer(),
                           ],
                         ),
                       ),

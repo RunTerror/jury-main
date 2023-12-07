@@ -396,15 +396,19 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:juridentt/authentication/general/login.dart';
+import 'package:juridentt/authentication/general/signup.dart';
 import 'package:juridentt/calender/count_provider.dart';
 import 'package:juridentt/chat_provider.dart';
 import 'package:juridentt/client/clientsearchpage.dart';
+import 'package:juridentt/constants.dart';
 import 'package:juridentt/internship_provider.dart';
 import 'package:juridentt/navbar.dart';
 import 'package:juridentt/navbar/navbar_provider.dart';
@@ -537,7 +541,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _getUserType();
-
     Timer(
       const Duration(seconds: 2),
       () {
@@ -548,23 +551,23 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void checkFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstTime = prefs.getBool('firstTime') ?? true;
-
+    final ispresented = prefs.getBool('firstTime');
+    print(ispresented);
     if (context.mounted) {
-      if (isFirstTime) {
-        await prefs.setBool('firstTime', false);
+      if (ispresented == null || ispresented == false) {
+        await prefs.setBool('firstTime', true);
         // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => OnboardingScree()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => LandingScreen(userType: userType)),
-        );
-      }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const OnboardingScree()),
+    );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LandingScreen(userType: userType)),
+      );
+    }
     }
   }
 
@@ -576,37 +579,144 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(color: themeProvider.hamcontainer),
-          padding: const EdgeInsets.symmetric(horizontal: 120),
-          child: Image.asset('assets/Group 33622.png')),
-    );
+        backgroundColor: themeProvider.hamcontainer,
+        body: Stack(
+          children: [
+            Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: BoxDecoration(color: themeProvider.hamcontainer),
+                padding: const EdgeInsets.symmetric(horizontal: 120),
+                child: Image.asset('assets/Group 33622.png')),
+            Positioned(
+                top: 0, left: 80, child: Image.asset('assets/Ellipse 706.png')),
+            Positioned(
+                top: h / 3.2,
+                left: 30,
+                child: Image.asset('assets/JURIDENT.png')),
+            Positioned(
+                bottom: 0,
+                left: 200,
+                child: Image.asset('assets/Ellipse 705.png')),
+          ],
+        ));
   }
 }
 
-class OnboardingScree extends StatelessWidget {
+// splash screen
+
+class OnboardingScree extends StatefulWidget {
+  const OnboardingScree({super.key});
+
+  @override
+  State<OnboardingScree> createState() => _OnboardingScreeState();
+}
+
+class _OnboardingScreeState extends State<OnboardingScree> {
+  static final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(_handlePageChange);
+  }
+
+  void _handlePageChange() {
+    setState(() {
+      _currentPage = _pageController.page!.round();
+    });
+  }
+
+  final function = () {
+    _pageController.nextPage(
+        duration: Duration(milliseconds: 100), curve: Curves.decelerate);
+  };
+
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    final h = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: PageView(
+      body: Stack(
         children: [
-          OnboardingPage(text: 'Screen 1', color: Colors.blue),
-          OnboardingPage(text: 'Screen 2', color: Colors.green),
-          OnboardingPage(text: 'Screen 3', color: Colors.orange),
+          PageView(
+            onPageChanged: (value) {
+              setState(() {
+                _currentPage = value;
+              });
+            },
+            controller: _pageController,
+            children: [
+              OnboardingPage1(
+                function: function,
+              ),
+              OnboardingPage2(
+                function: function,
+              ),
+              const OnboardingPage3(),
+            ],
+          ),
+         _currentPage==2? Container(): Positioned(
+            top: 50,
+            right: 10,
+            child: InkWell(
+                onTap: () {
+                  _pageController.jumpToPage(2);
+                },
+                child:const Text(
+                  'Skip',
+                  style: TextStyle(color: Colors.white),
+                )),
+          ),
+          Positioned(
+            bottom: h / 7,
+            left: (w / 2) - 30,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: DotsIndicator(
+                dotsCount: 3,
+                position: _currentPage,
+                decorator: const DotsDecorator(
+                  color: Colors.white, // Inactive dot color
+                  activeColor: Colors.blue, // Active dot color
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
+Widget nextButton(
+  VoidCallback function,
+  double h,
+  double w,
+) {
+  return InkWell(
+    onTap: function,
+    child: Container(
+      height: h / 20,
+      width: w / 1.3,
+      decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      child: Text('Next'),
+      alignment: Alignment.center,
+    ),
+  );
+}
+
 class OnboardingPage extends StatelessWidget {
   final String text;
   final Color color;
 
-  const OnboardingPage({required this.text, required this.color});
+  const OnboardingPage({super.key, required this.text, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -619,6 +729,206 @@ class OnboardingPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class OnboardingPage1 extends StatelessWidget {
+  final VoidCallback function;
+  const OnboardingPage1({super.key, required this.function});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
+    return Scaffold(
+        backgroundColor: themeProvider.hamcontainer,
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            Positioned(
+                bottom: 40,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      // height: double.infinity,
+                      width: w,
+                      child: Image.asset(
+                          'assets/man turned around while working at the computer.png'),
+                    ),
+                    Text(
+                      'Stay Organized',
+                      style: TextStyle(fontSize: 40, color: Constants.yellow),
+                    ),
+                    const Gap(20),
+                    const Text(
+                      'Ensure that your schedule is',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const Text('accurate by entering new',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
+                    Text('appointments or events into',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
+                    Text('our digital calender',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
+                    const Gap(100),
+                    nextButton(function, h, w)
+                  ],
+                )),
+            Positioned(
+                right: 0, top: 100, child: Image.asset('assets/Layer_3.png')),
+          ],
+        ));
+  }
+}
+
+class OnboardingPage2 extends StatelessWidget {
+  final VoidCallback function;
+  const OnboardingPage2({super.key, required this.function});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
+    return Scaffold(
+        backgroundColor: themeProvider.hamcontainer,
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            Positioned(
+                bottom: 40,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      // height: double.infinity,
+                      width: w,
+                      child: Image.asset(
+                          'assets/businesswoman leaning on big clock with arms crossed.png'),
+                    ),
+                    Text(
+                      'Never Late',
+                      style: TextStyle(fontSize: 40, color: Constants.yellow),
+                    ),
+                    Gap(20),
+                    Text(
+                      'Our alarm system integrated',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text('within the app will notify you of',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
+                    Text('any upcoming events',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
+                    const Gap(100),
+                    nextButton(
+                      function,
+                      h,
+                      w,
+                    )
+                  ],
+                )),
+            Positioned(
+                left: 0,
+                top: 100,
+                child: Image.asset('assets/Layer_3 (1).png')),
+          ],
+        ));
+  }
+}
+
+class OnboardingPage3 extends StatelessWidget {
+  const OnboardingPage3({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
+    return Scaffold(
+        backgroundColor: themeProvider.hamcontainer,
+        body: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              padding: EdgeInsets.only(bottom: 50),
+              child:
+                  Image.asset('assets/target with dart arrow in bullseye.png'),
+            ),
+            Positioned(
+                bottom: 40,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(left: 70),
+                      // height: double.infinity,
+                      width: w,
+                      child: Image.asset(
+                          'assets/old businessman in classical suit and glasses showing v sign.png'),
+                    ),
+                    Text(
+                      'Everything in one place',
+                      style: TextStyle(fontSize: 32, color: Constants.yellow),
+                    ),
+                    const Gap(20),
+                    const Text(
+                      'All your personal notes to',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const Text('any case you\'d prefer',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
+                    const Gap(100),
+                    nextButton(() {
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) {
+                          return LawyerClientLogin();
+                        },
+                      ));
+                    }, h, w)
+                  ],
+                )),
+            Positioned(
+                right: 0, top: 100, child: Image.asset('assets/Layer_3.png')),
+          ],
+        ));
   }
 }
 
@@ -654,7 +964,7 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.userType == null
-        ? const LoginScreen()
+        ? const LawyerClientLogin()
         : widget.userType == 'lawyer'
             ? const PersistentNavbar()
             : const HomePage();
@@ -667,5 +977,142 @@ class MyHttpOverrides extends HttpOverrides {
     return super.createHttpClient(context)
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+class LawyerClientLogin extends StatefulWidget {
+  const LawyerClientLogin({super.key});
+
+  @override
+  State<LawyerClientLogin> createState() => _LawyerClientLoginState();
+}
+
+class _LawyerClientLoginState extends State<LawyerClientLogin> {
+  String user = 'lawyer';
+
+  @override
+  Widget build(BuildContext context) {
+    final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return Scaffold(
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(color: themeProvider.hamcontainer),
+        child: Stack(
+          children: [
+            Positioned(
+                bottom: 100, child: Image.asset('assets/Layer_3 (1).png')),
+            Positioned(
+              bottom: 10,
+              child: Column(
+                children: [
+                  Image.asset(
+                      'assets/old businessman showing v sign and holding hand on hip.png'),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    alignment: Alignment.center,
+                    width: w,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Welcome to Jurident!',
+                          style: TextStyle(
+                              fontSize: 35,
+                              color: Constants.yellow,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Gap(30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            customButton(w, h, 'Lawyer', () {
+                              user = 'lawyer';
+                              print(user);
+                              setState(() {});
+                            }, user),
+                            const Spacer(),
+                            customButton2(w, h, 'Client', () {
+                              user = 'client';
+                              print(user);
+                              setState(() {});
+                            }, user)
+                          ],
+                        ),
+                        const Gap(15),
+                        customLoginSignup(w, h, 'Login', () {
+                          Navigator.pushNamed(context, '/login',
+                              arguments: {'usertype': user});
+                        }, Colors.blue),
+                        const Gap(15),
+                        customLoginSignup(w, h, 'Signup', () {
+                          Navigator.pushNamed(context, '/signup',
+                              arguments: {'usertype': user});
+                        }, Colors.white)
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget customButton(
+      double w, double h, String text, VoidCallback function, String user) {
+    return InkWell(
+      onTap: function,
+      child: Container(
+        width: w / 2.3,
+        height: h / 15,
+        decoration: BoxDecoration(
+            color: user == 'lawyer' ? Constants.yellow : Colors.white,
+            borderRadius: const BorderRadius.all(Radius.circular(10))),
+        alignment: Alignment.center,
+        child: Text(
+          text,
+        ),
+      ),
+    );
+  }
+
+  Widget customButton2(
+      double w, double h, String text, VoidCallback function, String user) {
+    return InkWell(
+      onTap: function,
+      child: Container(
+        width: w / 2.3,
+        height: h / 15,
+        decoration: BoxDecoration(
+            color: user == 'client' ? Constants.yellow : Colors.white,
+            borderRadius: const BorderRadius.all(Radius.circular(10))),
+        alignment: Alignment.center,
+        child: Text(
+          text,
+        ),
+      ),
+    );
+  }
+
+  Widget customLoginSignup(
+      double w, double h, String text, VoidCallback function, Color color) {
+    return InkWell(
+      onTap: function,
+      child: Container(
+        width: w,
+        height: h / 15,
+        decoration: BoxDecoration(
+            color: color, borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: Text(
+          text,
+        ),
+        alignment: Alignment.center,
+      ),
+    );
   }
 }

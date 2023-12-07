@@ -2,9 +2,11 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/constants.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({Key? key}) : super(key: key);
@@ -14,7 +16,6 @@ class ForgetPassword extends StatefulWidget {
 }
 
 class _ForgetPasswordState extends State<ForgetPassword> {
-  // Reset Password
   Future<void> sendPasswordResetEmail() async {
     try {
       await Auth().sendPasswordResetEmail(
@@ -83,19 +84,17 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final themeProvider=Provider.of<ThemeProvider>(context);
     return SafeArea(
       child: Scaffold(
-        // backgroundColor: Constants.orange,
+        backgroundColor: themeProvider.hamcontainer,
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: Container(
             height: size.height,
             width: size.width,
             decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/bg_blue.png"),
-                fit: BoxFit.cover,
-              ),
+              
             ),
             child: Form(
               key: _formKey,

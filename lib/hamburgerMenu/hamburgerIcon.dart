@@ -10,6 +10,7 @@ import 'package:juridentt/features/client_search/widgets.dart';
 import 'package:juridentt/hamburgerMenu/faq.dart';
 import 'package:juridentt/hamburgerMenu/feedback.dart';
 import 'package:juridentt/internship_form.dart';
+import 'package:juridentt/main.dart';
 import 'package:juridentt/provider1.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -247,7 +248,7 @@ class _HamburgerIconState extends State<HamburgerIcon> {
                   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                     MaterialPageRoute(
                       builder: (context) {
-                        return const LoginScreen();
+                        return LawyerClientLogin();
                       },
                     ),
                     (route) {
