@@ -1,11 +1,14 @@
 // ignore_for_file: avoid_print
+
+import 'dart:developer';
+
 import 'package:another_flushbar/flushbar.dart';
-import 'package:email_auth/email_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:juridentt/authentication/client/login/login.dart';
-import 'package:juridentt/authentication/client/signup/signup_otp.dart';
+import 'package:juridentt/authentication/general/signupverification.dart';
 import 'package:juridentt/constants.dart';
+import 'package:juridentt/navbar.dart';
 import 'package:juridentt/provider1.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,7 +62,8 @@ class _SignupScreenState extends State<SignupScreen> {
     _focusNode4.unfocus();
   }
 
-  void SignUpOtpClient() async {
+  void signUpOtpClient() async {
+    log('Client SignUp started');
     String resp = await Auth().clientregisterUser(
       profile: '',
       name: usernameController.text.trim(),
@@ -74,17 +78,29 @@ class _SignupScreenState extends State<SignupScreen> {
     );
     print(resp);
     if (resp == 'success') {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Account Created! ')));
-      // ignore: use_build_context_synchronously
-      Navigator.push(context, MaterialPageRoute(
-        builder: (context) {
-          return const LoginScreenClient();
-        },
-      ));
-
-      // Navigator.pushNamed(context, '/clientlogin');
+      if (FirebaseAuth.instance.currentUser!.emailVerified) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Account Created! ')));
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return const LoginScreenClient();
+            },
+          ));
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return SignUpEmailVerification(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
+                usertype: 'client',
+              );
+            },
+          ));
+        }
+      }
     }
     if (resp ==
         'The account already exists for that email. Please try creating a new account.') {
@@ -102,7 +118,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/clientlogin');
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -126,7 +142,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/clientsignup');
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -149,7 +165,7 @@ class _SignupScreenState extends State<SignupScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/clientsignup');
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -165,33 +181,58 @@ class _SignupScreenState extends State<SignupScreen> {
 
   // }
 
+  void signUpUser() async {
+    log('laweyer signup started');
+    userProvider.toogleLoading();
+    String resp = await Auth().lawyerregisterUser(
+      isVerified: false,
+      profile: '',
+      name: usernameController.text.trim(),
+      location: '',
+      lawyerId: '',
+      clientId: '',
+      mobileNumber: phonenumberController.text.trim(),
+      email: emailController.text.trim(),
+      address: '',
+      type: '',
+      password: passwordController.text.trim(),
+    );
 
-    void signUpUser() async {
+    if (resp == 'success') {
+      // ignore: use_build_context_synchronously
       userProvider.toogleLoading();
-      String resp = await Auth().lawyerregisterUser(
-        profile: '',
-        name: usernameController.text.trim(),
-        location: '',
-        lawyerId: '',
-        clientId: '',
-        mobileNumber: phonenumberController.text.trim(),
-        email: emailController.text.trim(),
-        address: '',
-        type: '',
-        password: passwordController.text.trim(),
-      );
-      if (resp == 'success') {
-        // ignore: use_build_context_synchronously
-        userProvider.toogleLoading();
+      if (FirebaseAuth.instance.currentUser!.emailVerified) {
         if (context.mounted) {
-          Navigator.pushNamed(context, '/lawyerlogin');
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const PersistentNavbar();
+              },
+            ),
+            (route) => false,
+          );
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) {
+              return SignUpEmailVerification(
+                usertype: 'lawyer',
+                email: emailController.text.trim(),
+                password: passwordController.text.trim(),
+              );
+            },
+          ));
         }
       }
-      if (resp ==
-          'The account already exists for that email. Please try creating a new account.') {
-        userProvider.toogleLoading();
-        // ignore: use_build_context_synchronously
+    }
+    if (resp ==
+        'The account already exists for that email. Please try creating a new account.') {
+      userProvider.toogleLoading();
+      // ignore: use_build_context_synchronously
 
+      if (context.mounted) {
         showDialog(
           context: context,
           builder: (context) {
@@ -205,7 +246,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextButton(
                   child: Text('OK', style: Constants.lightBlackBold),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/lawyerlogin');
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -213,11 +254,13 @@ class _SignupScreenState extends State<SignupScreen> {
           },
         );
       }
-      if (resp ==
-          'The provided password is too weak. Please choose a stronger password.') {
-        print(resp);
-        // ignore: use_build_context_synchronously
-        userProvider.toogleLoading();
+    }
+    if (resp ==
+        'The provided password is too weak. Please choose a stronger password.') {
+      print(resp);
+      // ignore: use_build_context_synchronously
+      userProvider.toogleLoading();
+      if (context.mounted) {
         showDialog(
           context: context,
           builder: (context) {
@@ -231,7 +274,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextButton(
                   child: Text('OK', style: Constants.lightBlackBold),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/lawyersignup');
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -239,9 +282,11 @@ class _SignupScreenState extends State<SignupScreen> {
           },
         );
       }
-      if (resp == 'Some Error Occurred') {
-        // ignore: use_build_context_synchronously
-        userProvider.toogleLoading();
+    }
+    if (resp == 'Some Error Occurred') {
+      // ignore: use_build_context_synchronously
+      userProvider.toogleLoading();
+      if (context.mounted) {
         showDialog(
           context: context,
           builder: (context) {
@@ -255,7 +300,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextButton(
                   child: Text('OK', style: Constants.lightBlackBold),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/lawyersignup');
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -264,10 +309,11 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       }
     }
+  }
 
   @override
   Widget build(BuildContext context) {
-  userProvider = Provider.of<UserProvider>(context, listen: false);    
+    userProvider = Provider.of<UserProvider>(context, listen: false);
 
     final size = MediaQuery.of(context).size;
     // final height = size.height;
@@ -714,7 +760,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                         0.0, -20.0, 0.0),
                                     child: ElevatedButton(
                                         onPressed: () {
-                                          
                                           // if (_formKey.currentState!.validate()) {
                                           //   _formKey.currentState!.save();
                                           // }
@@ -748,7 +793,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                             ).show(context);
                                           } else {
                                             if (userType1 == 'lawyer') {
-                                              userProvider.toogleLoading();
+                                              print('lawyer signup started');
+                                              // userProvider.toogleLoading();
                                               signUpUser();
 
                                               // Navigator.pushNamed(
@@ -765,7 +811,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                               //   },
                                               // );
                                             } else {
-                                              SignUpOtpClient();
+                                              signUpOtpClient();
 
                                               // Navigator.pushNamed(
                                               //   context,
@@ -886,6 +932,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         if (userType1 == 'lawyer') {
+                                          print('clicked');
                                           Auth()
                                               .signInWithGoogleLawyer(context);
                                         } else {

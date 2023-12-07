@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:http/http.dart';
 import 'package:juridentt/client/clientsearchpage.dart';
 import 'package:juridentt/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +21,7 @@ class Auth {
 
   // User Registration for lawyer
   Future<String> lawyerregisterUser({
+    required bool isVerified,
     required String profile,
     required String name,
     required String location,
@@ -39,6 +39,7 @@ class Auth {
           .createUserWithEmailAndPassword(email: email, password: password);
       String? mtoken = await FirebaseMessaging.instance.getToken();
       Info userData = Info(
+        // isVerified: isVerified,
         profile: profile,
         name: name,
         location: location,
@@ -109,6 +110,7 @@ class Auth {
           .createUserWithEmailAndPassword(email: email, password: password);
       String? mtoken = await FirebaseMessaging.instance.getToken();
       Info userData = Info(
+        // isVerified: isVerified,
         profile: profile,
         name: name,
         location: location,
@@ -172,7 +174,9 @@ class Auth {
         res = 'success';
         final sharedPreferences = await SharedPreferences.getInstance();
         await sharedPreferences.clear();
-        sharedPreferences.setString('userType', 'lawyer');
+         sharedPreferences.setString('userType', 'lawyer');
+         final user=sharedPreferences.get('userType');
+         print(user);
       } else {
         res = 'Please enter email and password';
       }
@@ -861,7 +865,7 @@ class Auth {
           if (mobileNumber != null || mobileNumber != '') {
 
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const HomePage();
+              return  const HomePage();
             },));
 
           } else {

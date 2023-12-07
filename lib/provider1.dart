@@ -5,10 +5,9 @@ import 'models/user.dart';
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
-
-  bool _isSignupLoading=false;
-  bool get isSignupLoading=> _isSignupLoading;
-  bool _isLoginLoading=false;
+  bool _isSignupLoading = false;
+  bool get isSignupLoading => _isSignupLoading;
+  bool _isLoginLoading = false;
   bool get isLoaginLoading => _isLoginLoading;
   Info _user = Info(
     profile: '',
@@ -29,12 +28,13 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  toogleLoading(){
-    _isSignupLoading=!_isSignupLoading;
+  toogleLoading() {
+    _isSignupLoading = !_isSignupLoading;
     notifyListeners();
   }
-  toogleLoginLoading(){
-    _isLoginLoading=!_isLoginLoading;
+
+  toogleLoginLoading() {
+    _isLoginLoading = !_isLoginLoading;
     notifyListeners();
   }
 }

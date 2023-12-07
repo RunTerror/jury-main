@@ -1,19 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:juridentt/addcase/cases.dart';
 import 'package:juridentt/addcase/newcase_form.dart';
 import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/calender/calendar.dart';
 import 'package:juridentt/constants.dart';
 import 'package:juridentt/hamburgerMenu/editprofile.dart';
-import 'package:juridentt/hamburgerMenu/hamburger_icon.dart';
+import 'package:juridentt/hamburgerMenu/hamburgerIcon.dart';
 import 'package:juridentt/news/news.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 class PersistentNavbar extends StatefulWidget {
-  PersistentNavbar({
+  const PersistentNavbar({
     super.key,
   });
 
@@ -22,8 +19,6 @@ class PersistentNavbar extends StatefulWidget {
 }
 
 class _PersistentNavbarState extends State<PersistentNavbar> {
-  // final controller = PersistentTabController(initialIndex: 0);
-
   int _cIndex = 0;
 
   void _incrementTab(index) {
@@ -40,22 +35,26 @@ class _PersistentNavbarState extends State<PersistentNavbar> {
     return Scaffold(
       drawer: const HamburgerIcon(),
       body: _buildScreens[_cIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        iconSize: 30,
-        selectedLabelStyle: TextStyle(color: Constants.yellow),
-        unselectedLabelStyle: const TextStyle(color: Colors.white),
-        backgroundColor: themeProvider.hamcontainer,
-        currentIndex: _cIndex,
-        selectedItemColor: Constants.yellow,
-        unselectedItemColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        items: _navBarsItems(themeProvider),
-        onTap: (index) {
-          if(index!=2){
-            _incrementTab(index);
-          }
-          
-        },
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+        child: BottomNavigationBar(
+          iconSize: 30,
+          selectedLabelStyle: TextStyle(color: Constants.yellow),
+          unselectedLabelStyle: TextStyle(color: themeProvider.hamcontainer),
+          backgroundColor: Colors.white,
+          currentIndex: _cIndex,
+          selectedItemColor: Constants.yellow,
+          unselectedItemColor: themeProvider.hamcontainer,
+          type: BottomNavigationBarType.fixed,
+          items: _navBarsItems(themeProvider, _cIndex),
+          onTap: (index) {
+            if (index != 2) {
+              _incrementTab(index);
+            }
+          },
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
@@ -74,68 +73,44 @@ class _PersistentNavbarState extends State<PersistentNavbar> {
     );
   }
 
-  // PersistentTabView(
-  //     context,
-  //     controller: controller,
-  //     // floatingActionButton: const SizedBox(),
-  //     screens: _buildScreens(),
-  //     items: _navBarsItems(themeProvider),
-  //     backgroundColor: themeProvider.hamcontainer,
-  //     navBarStyle: NavBarStyle.style15, // Adjust the style as needed
-  //     confineInSafeArea: false,
-  //     handleAndroidBackButtonPress: true,
-  //     hideNavigationBarWhenKeyboardShows: true,
-  //     resizeToAvoidBottomInset: false,
-  //     hideNavigationBar: false,
-  //     stateManagement: true,
-  //     screenTransitionAnimation: const ScreenTransitionAnimation(
-  //       animateTabTransition: true,
-  //       curve: Curves.bounceIn,
-  //     ),
-  //     decoration: NavBarDecoration(
-  //       borderRadius: BorderRadius.only(
-  //           topRight: Radius.circular(15.r), topLeft: Radius.circular(15.r)),
-  //     ),
-  //   ))
-
   final List<Widget> _buildScreens = [
-    CasePage(),
-    NewsPage(),
+    const CasePage(),
+    const NewsPage(),
     Container(),
-    Calendar(),
-    EditProfile(),
-   
+    const Calendar(),
+    const EditProfile(),
   ];
 }
 
-List<BottomNavigationBarItem> _navBarsItems(ThemeProvider themeProvider) {
-  return const [
+List<BottomNavigationBarItem> _navBarsItems(
+    ThemeProvider themeProvider, int index) {
+  return [
     BottomNavigationBarItem(
       icon: Icon(
-        Icons.home_outlined,
+        index == 0 ? Icons.home_filled : Icons.home_outlined,
       ),
       label: 'Home',
     ),
     BottomNavigationBarItem(
         icon: Icon(
-          Icons.newspaper_outlined,
+          index == 1 ? Icons.newspaper : Icons.newspaper_outlined,
         ),
         label: 'News'),
-        BottomNavigationBarItem(
+    const BottomNavigationBarItem(
         icon: Icon(
           null,
         ),
         label: ''),
     BottomNavigationBarItem(
       icon: Icon(
-        Icons.calendar_month_outlined,
+        index == 4 ? Icons.calendar_month_sharp : Icons.calendar_month_outlined,
       ),
       label: 'Calendar',
     ),
     BottomNavigationBarItem(
       icon: Icon(
         size: 30,
-        Icons.person_2_outlined,
+        index == 5 ? Icons.person : Icons.person_2_outlined,
       ),
       label: 'Account',
     ),

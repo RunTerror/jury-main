@@ -2,7 +2,6 @@
 
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:juridentt/otp_all.dart';
 import 'package:juridentt/constants.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -76,6 +75,7 @@ class _SignUpOtpState extends State<SignUpOtp> {
 
   void signUpUser() async {
     String resp = await Auth().lawyerregisterUser(
+      isVerified: false,
       profile: '',
       name: widget.username,
       location: '',

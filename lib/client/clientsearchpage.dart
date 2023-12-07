@@ -62,14 +62,14 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Filter Options'),
+          title: const Text('Filter Options'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    title: Text('Type'),
+                    title: const Text('Type'),
                     onTap: () {
                       setState(() {
                         selectedValue = 'type';
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   ListTile(
-                    title: Text('Name'),
+                    title: const Text('Name'),
                     onTap: () {
                       setState(() {
                         selectedValue = 'name';
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   ListTile(
-                    title: Text('Address'),
+                    title: const Text('Address'),
                     onTap: () {
                       setState(() {
                         selectedValue = 'address';
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.black,
                   ),
                 ),
-                Text(
+                const Text(
                   'Filter',
                   style: TextStyle(
                     color: Colors.black,
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 40,
                 ),
                 const Text(
@@ -206,19 +206,19 @@ class _HomePageState extends State<HomePage> {
                               },
                               child: Column(
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                       height: 17), // Gap between list tiles
                                   Container(
                                     width: 370,
                                     decoration: BoxDecoration(
-                                      color: Color(0xFF050125),
+                                      color: const Color(0xFF050125),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: ExpansionTile(
                                       title: ListTile(
                                         title: Text(
                                           info.name,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             color: Color(0xFFC99F4A),
                                             fontSize: 16,
@@ -227,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                                         subtitle: !info.isExpanded
                                             ? Text(
                                                 '${info.lawyerId}\n${info.type}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.w500,
@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                                               )
                                             : Text(
                                                 'Advocate at ${info.location}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Color(0xFFC99F4A),
                                                   fontSize: 10,
                                                   fontWeight: FontWeight.w500,
@@ -250,16 +250,25 @@ class _HomePageState extends State<HomePage> {
                                                 NetworkImage(info.profile),
                                               ),
                                       ),
+                                      onExpansionChanged: (expanded) {
+                                        setState(() {
+                                          info.isExpanded = expanded;
+                                        });
+                                      },
+                                      trailing: const Icon(
+                                        Icons.expand_more,
+                                        color: Color(0xFFC99F4A),
+                                      ),
                                       children: [
                                         Container(
                                           width: 370,
                                           decoration: BoxDecoration(
-                                            color: Color(0xFF050125),
+                                            color: const Color(0xFF050125),
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                           ),
                                           child: Padding(
-                                            padding: EdgeInsets.only(
+                                            padding: const EdgeInsets.only(
                                                 left: 18.0, bottom: 30.0),
                                             child: ListTile(
                                               title: Column(
@@ -268,31 +277,31 @@ class _HomePageState extends State<HomePage> {
                                                 children: [
                                                   Text(
                                                     'Mobile: ${info.mobileNumber}',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 11,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                       height:
                                                           10), // Adding space here
                                                   Text(
                                                     'Email: ${info.email}',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 11,
                                                       fontWeight:
                                                           FontWeight.w500,
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                       height:
                                                           10), // Adding space here
                                                   Text(
                                                     'Address: ${info.address}',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 11,
                                                       fontWeight:
@@ -305,15 +314,6 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                       ],
-                                      onExpansionChanged: (expanded) {
-                                        setState(() {
-                                          info.isExpanded = expanded;
-                                        });
-                                      },
-                                      trailing: Icon(
-                                        Icons.expand_more,
-                                        color: Color(0xFFC99F4A),
-                                      ),
                                     ),
                                   ),
                                 ],

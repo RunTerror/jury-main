@@ -1,22 +1,13 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
-import 'dart:math';
 
 import 'package:another_flushbar/flushbar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:juridentt/authentication/general/verification_page.dart';
 import 'package:juridentt/constants.dart';
-import 'package:juridentt/models/user.dart';
-import 'package:juridentt/navbar/home_screen.dart';
 import 'package:juridentt/provider1.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:juridentt/client/clientsearchpage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -54,17 +45,20 @@ class _LoginScreenState extends State<LoginScreen> {
     _focusNode1.unfocus();
     _focusNode2.unfocus();
   }
-  
+
   void loginClient() async {
     String res = await Auth().clientloginUser(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim()
-    );
+        email: emailController.text.trim(),
+        password: passwordController.text.trim());
 
     if (res == 'success') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const HomePage();
-      },));
+      
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return const EmailVerification(usertype: 'client',);
+          },
+        ));
+
       // Navigator.pushNamed(context, '/clienthomescreen');
       // Navigator.pushNamed(context, '/clientsearchpage');
     }
@@ -83,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: Constants.lightBlackBold,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/clientlogin');
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -103,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/clientlogin');
+                   Navigator.pop(context);
                 },
               ),
             ],
@@ -123,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/clientlogin');
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -143,13 +137,19 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (res == 'success') {
-       _userProvider.toogleLoginLoading();
-      Navigator.pushNamedAndRemoveUntil(context, '/lawyerhomescreen', (route) {
-        return false;
-      },);
+      _userProvider.toogleLoginLoading();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const EmailVerification(usertype: 'lawyer',);
+          },
+        ),
+        (route) => false,
+      );
     }
     if (res == 'Incorrect password. Please try again.') {
-       _userProvider.toogleLoginLoading();
+      _userProvider.toogleLoginLoading();
       showDialog(
         context: context,
         builder: (context) {
@@ -164,7 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: Constants.lightBlackBold,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/lawyerlogin');
+                  // Navigator.pushNamed(context, '/lawyerlogin');
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -173,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
     if (res == 'User not found. Please create a new account.') {
-       _userProvider.toogleLoginLoading();
+      _userProvider.toogleLoginLoading();
       showDialog(
         context: context,
         builder: (context) {
@@ -186,9 +187,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return 
+                  //   return
                   // },));
-                  Navigator.pushNamed(context, '/lawyerlogin');
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -197,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
     if (res == 'Some Error Occurred') {
-       _userProvider.toogleLoginLoading();
+      _userProvider.toogleLoginLoading();
       showDialog(
         context: context,
         builder: (context) {
@@ -209,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/lawyerlogin');
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -221,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _userProvider=Provider.of<UserProvider>(context);
+    _userProvider = Provider.of<UserProvider>(context);
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -554,7 +555,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   Container(
-                                    padding:const EdgeInsets.only(right: 5),
+                                    padding: const EdgeInsets.only(right: 5),
                                     transform: Matrix4.translationValues(
                                         0.0, -60.0, 0.0),
                                     child: Row(
@@ -600,10 +601,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 left: 9.w, top: 2.h),
                                             child: Text(
                                               "Forgot Password?",
-                                              
                                               textAlign: TextAlign.left,
-                                              style: Constants
-                                                  .satoshiYellow14,
+                                              style: Constants.satoshiYellow14,
                                             ),
                                           ),
                                         ),
@@ -611,8 +610,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: () {
-                                      if (emailController.text.trim().isEmpty ||
+                                      onPressed: () {
+                                        if (emailController.text.trim().isEmpty ||
                                             emailController.text
                                                 .trim()
                                                 .isEmpty ||
@@ -622,58 +621,71 @@ class _LoginScreenState extends State<LoginScreen> {
                                             passwordController.text
                                                 .trim()
                                                 .isEmpty) {
-                                                    Flushbar(
-                                                      backgroundColor:const Color(0xFF40A2B6),
-                                                      borderRadius:const BorderRadius.all(Radius.circular(5)),
-                                                      isDismissible: true,
-                                            flushbarPosition: FlushbarPosition.BOTTOM,
-                                            margin:const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                          Flushbar(
+                                            backgroundColor:
+                                                const Color(0xFF40A2B6),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(5)),
+                                            isDismissible: true,
+                                            flushbarPosition:
+                                                FlushbarPosition.BOTTOM,
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 10),
                                             message:
                                                 "Please fill the remaining fields",
-                                            duration:const Duration(seconds: 3),
-                                          ).show(context);              
+                                            duration:
+                                                const Duration(seconds: 3),
+                                          ).show(context);
                                         } else {
-                                      if (userType1 == 'lawyer') {
-                                        loginUser();
-                                        // Navigator.pushNamed(
-                                        //   context,
-                                        //   '/lawyerloginotp',
-                                        //   arguments: {
-                                        //     'useremail': emailController.text,
-                                        //     'userpassword':
-                                        //         passwordController.text,
-                                        //   },
-                                        // );
-                                      } else {
-                                        loginClient();
-                                        // Navigator.pushNamed(
-                                        //   context,
-                                        //   '/clientloginotp',
-                                        //   arguments: {
-                                        //     'useremail': emailController.text,
-                                        //     'userpassword':
-                                        //         passwordController.text,
-                                        //   },
-                                        // );
-                                      }}
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Constants.lightblack,
-                                      minimumSize: Size(320.w, 50.h),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
+                                          if (userType1 == 'lawyer') {
+                                            loginUser();
+                                            // Navigator.pushNamed(
+                                            //   context,
+                                            //   '/lawyerloginotp',
+                                            //   arguments: {
+                                            //     'useremail': emailController.text,
+                                            //     'userpassword':
+                                            //         passwordController.text,
+                                            //   },
+                                            // );
+                                          } else {
+                                            loginClient();
+                                            // Navigator.pushNamed(
+                                            //   context,
+                                            //   '/clientloginotp',
+                                            //   arguments: {
+                                            //     'useremail': emailController.text,
+                                            //     'userpassword':
+                                            //         passwordController.text,
+                                            //   },
+                                            // );
+                                          }
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Constants.lightblack,
+                                        minimumSize: Size(320.w, 50.h),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
                                       ),
-                                    ),
-                                    child: Consumer(builder: (context, value, child) {
-                                      if(_userProvider.isLoaginLoading){
-                                        return Center(child: CircularProgressIndicator(color: Constants.orange,),);
-                                      }
-                                      return Text(
-                                      "Log in",
-                                      style: Constants.satoshiWhite18,
-                                    );
-                                    },)
-                                  ),
+                                      child: Consumer(
+                                        builder: (context, value, child) {
+                                          if (_userProvider.isLoaginLoading) {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                color: Constants.orange,
+                                              ),
+                                            );
+                                          }
+                                          return Text(
+                                            "Log in",
+                                            style: Constants.satoshiWhite18,
+                                          );
+                                        },
+                                      )),
                                 ],
                               ),
                             ),
@@ -726,8 +738,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             // Consumer<>(builder: (context, value, child) {
-                              
-                              
+
                             // },),
                             // ),
                             // const Flex(direction: Axis.vertical),

@@ -12,7 +12,7 @@ class LawyerDetailsPage extends StatelessWidget {
         image: DecorationImage(
           image: lawerInfo.profile != ''
               ? AssetImage(lawerInfo.profile)
-              : AssetImage('assets/images/lawyer1.jpeg'),
+              : const AssetImage('assets/images/lawyer1.jpeg'),
           fit: BoxFit.fill,
         ),
       ),
@@ -22,7 +22,7 @@ class LawyerDetailsPage extends StatelessWidget {
           // height: MediaQuery.of(context).size.height / 2,
           height: 475,
           width: 428,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color(0xFF050125),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40),
@@ -32,14 +32,14 @@ class LawyerDetailsPage extends StatelessWidget {
           child: ListView(
             children: [
               Padding(
-                padding: EdgeInsets.all(33.0),
+                padding: const EdgeInsets.all(33.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
                       child: Text(
                         lawerInfo.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFFC99F4A),
@@ -47,62 +47,62 @@ class LawyerDetailsPage extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24,
                     ),
                     Text(
                       'Lawyer ID:  ${lawerInfo.lawyerId}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Text(
                       'Type:   ${lawerInfo.type}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 19,
                     ),
                     Text(
                       'Phone:   ${lawerInfo.mobileNumber}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20.0,
                     ),
                     Text(
                       'Email:   ${lawerInfo.email}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20.0,
                     ),
                     Text(
                       'Office Adress:   ${lawerInfo.address}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 46,
                     ),
                     Center(
@@ -111,15 +111,13 @@ class LawyerDetailsPage extends StatelessWidget {
                           // Handle button press
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
+                          foregroundColor: Colors.white, backgroundColor: const Color(0xFFC99F4A), padding: const EdgeInsets.symmetric(
                               vertical: 4.0, horizontal: 10.0),
-                          primary: Color(0xFFC99F4A),
-                          onPrimary: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        child: Text('Hire Me'),
+                        child: const Text('Hire Me'),
                       ),
                     ),
                   ],

@@ -43,6 +43,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void signUpUser() async {
     String resp = await Auth().lawyerregisterUser(
+      isVerified: false,
       profile: '',
       name: usernameController.text.trim(),
       location: '',

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:juridentt/addcase/provider.dart';
-import 'package:juridentt/hamburgerMenu/hamburger_icon.dart';
-
+import 'package:juridentt/hamburgerMenu/hamburgerIcon.dart';
 import 'package:provider/provider.dart';
 
 class AboutUsScreen extends StatelessWidget {

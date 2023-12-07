@@ -45,7 +45,7 @@ class _AppTextFieldWithDatePickerState
       // firstDate: DateTime(2000),
       // lastDate: DateTime(2100),
       firstDate: DateTime(1800, 1, 1),
-      lastDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 1000))
       // lastDate: DateTime.now().add(const Duration(days: 365)),
     );
     if (picked != null) {

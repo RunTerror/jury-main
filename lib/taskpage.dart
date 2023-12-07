@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class tasks extends StatefulWidget {
+  const tasks({super.key});
+
   @override
   _tasks createState() => _tasks();
 }

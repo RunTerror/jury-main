@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class faq extends StatefulWidget {
+  const faq({super.key});
+
   @override
   _faq createState() => _faq();
 }
@@ -8,7 +10,7 @@ class faq extends StatefulWidget {
 class _faq extends State<faq> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text("Faq Works"),
       ),

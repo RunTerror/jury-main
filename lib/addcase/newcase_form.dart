@@ -647,14 +647,17 @@ class _newcase_formContentState extends State<newcase_form> {
                     ],
                   ),
                 ),
-                AppFilePicker(
-                  title: "Case File Upload",
-                  onFilesSelected: (file) async {
-                    final caseFormState =
-                        Provider.of<CaseFormState>(context, listen: false);
-                    caseFormState.files = file;
-                  },
-                  buttonText: "Upload Files",
+                SizedBox(
+                  width: double.infinity,
+                  child: AppFilePicker(
+                    title: "Case File Upload",
+                    onFilesSelected: (file) async {
+                      final caseFormState =
+                          Provider.of<CaseFormState>(context, listen: false);
+                      caseFormState.files = file;
+                    },
+                    buttonText: "Upload Files",
+                  ),
                 ),
                 // const SizedBox(
                 //   height: 20,

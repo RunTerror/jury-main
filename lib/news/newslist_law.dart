@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:juridentt/addcase/provider.dart';
-import 'package:juridentt/hamburgerMenu/hamburger_icon.dart';
+import 'package:juridentt/hamburgerMenu/hamburgerIcon.dart';
 import 'package:juridentt/news/news.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

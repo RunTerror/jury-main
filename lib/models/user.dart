@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Info {
+  // final bool isVerified;
   final String profile;
   final String name;
   final String location;
@@ -19,6 +20,7 @@ class Info {
   bool isExpanded;
 
   Info({
+    // required this.isVerified,
     required this.profile,
     required this.name,
     required this.location,
@@ -34,6 +36,7 @@ class Info {
 
   Map<String, dynamic> toJson() {
     return {
+      // 'isVeified':isVerified,
       'profile': profile,
       'name': name,
       'location': location,
@@ -159,6 +162,7 @@ class Info {
       ][random.nextInt(5)]} St, $location, USA';
 
       var profile = Info(
+        // isVerified: false,
         profile: profilePhoto,
         name: name,
         location: location,
@@ -183,6 +187,7 @@ class Info {
       
     }
     return Info(
+      // isVerified: data['isVerified'],
       profile: data['profile'],
       name: data['name'],
       location: data['location'],
@@ -197,6 +202,7 @@ class Info {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      // 'isVerified': isVerified,
       'profile': profile,
       'name': name,
       'location': location,
@@ -211,6 +217,7 @@ class Info {
 
   factory Info.fromMap(Map<String, dynamic> map) {
     return Info(
+      // isVerified: (map['isVerified'])as bool,
       profile: (map["profile"] ?? '') as String,
       name: (map["name"] ?? '') as String,
       location: (map["location"] ?? '') as String,

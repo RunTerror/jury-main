@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:juridentt/addcase/provider.dart';
-import 'package:juridentt/hamburgerMenu/hamburger_icon.dart';
+import 'package:juridentt/hamburgerMenu/hamburgerIcon.dart';
 import 'package:provider/provider.dart';
 
 class FeedbackPage extends StatefulWidget {
@@ -112,7 +112,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 
-                child: Image.asset("assets/Group 33622.png"),
+                child: Image.asset("assets/Group 33622.png",height:100,),
               ),
           
               Flexible(

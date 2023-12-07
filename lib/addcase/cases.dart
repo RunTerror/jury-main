@@ -167,85 +167,89 @@ class _CasePageState extends State<CasePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      
+      backgroundColor: themeProvider.hamcontainer,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: themeProvider.ham),
+        toolbarHeight: 100,
+        iconTheme:const IconThemeData(color: Colors.white),
         centerTitle: true,
-        backgroundColor: themeProvider.appbarcolor,
+        title:const Image(image: AssetImage('assets/Artboard 213.png'),height: 70,),
+        backgroundColor: themeProvider.hamcontainer,
         elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: InkWell(
-              onTap: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => Profile()));
-              },
-              child: Container(
-                  // width: 35,
-                  decoration: BoxDecoration(
-                    // color: Colors.orange,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Icon(
-                    Icons.notifications_outlined,
-                    color: themeProvider.ham,
-                  )),
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.all(10.0),
+        //     child: InkWell(
+        //       onTap: () {
+        //         // Navigator.push(context,
+        //         //     MaterialPageRoute(builder: (context) => Profile()));
+        //       },
+        //       child: Container(
+        //           // width: 35,
+        //           decoration: BoxDecoration(
+        //             // color: Colors.orange,
+        //             borderRadius: BorderRadius.circular(20),
+        //           ),
+        //           child: Icon(
+        //             Icons.notifications_outlined,
+        //             color: themeProvider.ham,
+        //           )),
+        //     ),
+        //   ),
+        // ],
       ),
       drawer: const HamburgerIcon(),
 
-      // backgroundColor: themeProvider.,
+      drawerScrimColor: Colors.white,
       body: Container(
         decoration:
-            BoxDecoration(gradient: themeProvider.scaffoldGradientscrol),
+            BoxDecoration(color: themeProvider.hamcontainer),
         padding: EdgeInsets.only(top: 20.h),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "JURIDENT",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: themeProvider.darkopp,
-                fontSize: 30.sp,
-                fontFamily: 'Satoshi',
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.normal,
-              ),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () => handleCaseTap(0),
                   onTapCancel: handleCaseTapCancel,
-                  child: Transform(
-                    transform: Matrix4.translationValues(0, 0, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: selectedCaseIndex == 0
+                            ? const Color(0xffC99F4A)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                            width: 2, color: themeProvider.bordercolor)),
+                    width: screenWidth > 380 ? 120 : 100,
+                    height: screenHeight > 615 ? 140 : 100,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const SizedBox(height: 20,),
+                        Text(
+                        '${openCasesLists.length}',
+                        style: TextStyle(
+                          fontSize: 35.sp,
                           color: selectedCaseIndex == 0
-                              ? const Color(0xffC99F4A)
-                              : const Color(0xff050125),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              width: 2, color: themeProvider.bordercolor)),
-                      width: screenWidth > 380 ? 120 : 100,
-                      height: screenHeight > 615 ? 120 : 100,
-                      child: Center(
-                        child: Text(
-                          '${openCasesLists.length} \nOpen\ncases',
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            color: selectedCaseIndex == 0
-                                ? Colors.black
-                                : const Color(0xffC99F4A),
-                          ),
-                          textAlign: TextAlign.center,
+                              ? Colors.black
+                              :Colors.black,
                         ),
+                        textAlign: TextAlign.center,
                       ),
+                      Text(
+                        'Open\ncases',
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          color: selectedCaseIndex == 0
+                              ? Colors.black
+                              :Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20,),
+                      ],)
                     ),
                   ),
                 ),
@@ -255,30 +259,41 @@ class _CasePageState extends State<CasePage> {
                 GestureDetector(
                   onTap: () => handleCaseTap(1),
                   onTapCancel: handleCaseTapCancel,
-                  child: Transform(
-                    transform: Matrix4.translationValues(0, 0, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: selectedCaseIndex == 1
+                            ? const Color(0xffC99F4A)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                            width: 2, color: themeProvider.bordercolor)),
+                    width: screenWidth > 380 ? 120 : 100,
+                    height: screenHeight > 615 ? 140 : 100,
+                    child: Center(
+                      child: Column(children: [
+                        const SizedBox(height: 20,),
+                        Text(
+                        '${closedCasesLists.length}',
+                        style: TextStyle(
+                          fontSize: 35.sp,
                           color: selectedCaseIndex == 1
-                              ? const Color(0xffC99F4A)
-                              : const Color(0xff050125),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              width: 2, color: themeProvider.bordercolor)),
-                      width: screenWidth > 380 ? 120 : 100,
-                      height: screenHeight > 615 ? 120 : 100,
-                      child: Center(
-                        child: Text(
-                          '${closedCasesLists.length} \nClosed\ncases',
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            color: selectedCaseIndex == 1
-                                ? Colors.black
-                                : const Color(0xffC99F4A),
-                          ),
-                          textAlign: TextAlign.center,
+                              ? Colors.black
+                              :Colors.black,
                         ),
+                        textAlign: TextAlign.center,
                       ),
+                      Text(
+                        'Closed\ncases',
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          color: selectedCaseIndex == 1
+                              ? Colors.black
+                              : Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20,),
+                      ],)
                     ),
                   ),
                 ),
@@ -288,30 +303,44 @@ class _CasePageState extends State<CasePage> {
                 GestureDetector(
                   onTap: () => handleCaseTap(2),
                   onTapCancel: handleCaseTapCancel,
-                  child: Transform(
-                    transform: Matrix4.translationValues(0, 0, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: selectedCaseIndex == 2
+                            ? const Color(0xffC99F4A)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                            width: 2, color: themeProvider.bordercolor)),
+                    width: screenWidth > 380 ? 120 : 100,
+                    height: screenHeight > 615 ? 140 : 100,
+                    child: Center(
+
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const SizedBox(height: 20,),
+                        Text(
+                        '${upcomingCasesLists.length}',
+                        style: TextStyle(
+                          fontSize: 35.sp,
                           color: selectedCaseIndex == 2
-                              ? const Color(0xffC99F4A)
-                              : const Color(0xff050125),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              width: 2, color: themeProvider.bordercolor)),
-                      width: screenWidth > 380 ? 120 : 100,
-                      height: screenHeight > 615 ? 120 : 100,
-                      child: Center(
-                        child: Text(
-                          '${upcomingCasesLists.length} \nUpcoming\ncases',
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            color: selectedCaseIndex == 2
-                                ? Colors.black
-                                : const Color(0xffC99F4A),
-                          ),
-                          textAlign: TextAlign.center,
+                              ? Colors.black
+                              : Colors.black,
                         ),
+                        textAlign: TextAlign.center,
                       ),
+                      Text(
+                        'Upcoming\ncases',
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          color: selectedCaseIndex == 2
+                              ? Colors.black
+                              : Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20,),
+                      ],)
                     ),
                   ),
                 ),
@@ -404,23 +433,17 @@ class _CasePageState extends State<CasePage> {
                 width: double.infinity,
                 margin: EdgeInsets.only(left: 18.w, right: 18.w),
                 padding: EdgeInsets.symmetric(vertical: 8.h),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                  ),
-                  border: Border.all(
-                    color: Colors.yellow,
-                    width: 1,
-                  ),
-                  color: const Color(0xFF050125),
+                alignment: Alignment.center,
+                decoration:const BoxDecoration(
+                  borderRadius:  BorderRadius.all(Radius.circular(15)),
+                  color: Colors.white,
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(left: 10.w),
                   child: Text(
                     'Quick Access',
                     style: TextStyle(
-                      color: const Color(0xFFC99F4A),
+                      color: Colors.black,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -452,15 +475,15 @@ class _CasePageState extends State<CasePage> {
                     crossAxisSpacing: 15.0.w,
                     children: [
                       QuickAccessButton(
-                        imagePath: 'assets/images/icons/allcases.png',
-                        label: 'Shared Cases',
+                        imagePath: 'assets/first.png',
+                        label: 'All Cases',
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(context,
-                              screen: SharedCasesPage());
+                              screen: const SharedCasesPage());
                         },
                       ),
                       QuickAccessButton(
-                        imagePath: 'assets/images/icons/addcase.png',
+                        imagePath: 'assets/second.png',
                         label: 'Add Case',
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(context,
@@ -468,15 +491,15 @@ class _CasePageState extends State<CasePage> {
                         },
                       ),
                       QuickAccessButton(
-                        imagePath: 'assets/images/icons/tasks.png',
+                        imagePath: 'assets/third.png',
                         label: 'Tasks',
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(context,
-                              screen: tasks());
+                              screen: const tasks());
                         },
                       ),
                       QuickAccessButton(
-                        imagePath: 'assets/images/icons/sharedfiles.png',
+                        imagePath: 'assets/fourth.png',
                         label: 'Shared Files',
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(context,
@@ -484,7 +507,7 @@ class _CasePageState extends State<CasePage> {
                         },
                       ),
                       QuickAccessButton(
-                        imagePath: 'assets/images/icons/events.png',
+                        imagePath: 'assets/fifth.png',
                         label: 'Events',
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(context,
@@ -492,11 +515,11 @@ class _CasePageState extends State<CasePage> {
                         },
                       ),
                       QuickAccessButton(
-                        imagePath: 'assets/images/icons/faq.png',
+                        imagePath: 'assets/sixth.png',
                         label: 'FAQ',
                         onTap: () {
                           PersistentNavBarNavigator.pushNewScreen(context,
-                              screen: faq());
+                              screen: const faq());
                         },
                       ),
                     ],
@@ -543,7 +566,7 @@ class QuickAccessButton extends StatelessWidget {
           Image.asset(
             imagePath,
             width: 27.0.w,
-            height: 27.0.h,
+            height: 32.0.h,
           ),
           SizedBox(height: 8.0.h),
           Text(

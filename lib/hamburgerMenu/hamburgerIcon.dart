@@ -1,16 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:juridentt/Bare%20acts/Bare_acts_page.dart';
-import 'package:juridentt/Contact/Gpt_page.dart';
 import 'package:juridentt/Contact/chat_page.dart';
 import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/general/login.dart';
 import 'package:juridentt/features/client_search/widgets.dart';
 import 'package:juridentt/hamburgerMenu/faq.dart';
 import 'package:juridentt/hamburgerMenu/feedback.dart';
-import 'package:juridentt/hamburgerMenu/terms.dart';
+import 'package:juridentt/internship_form.dart';
+import 'package:juridentt/provider1.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HamburgerIcon extends StatefulWidget {
   static const String routename = '/hamburger';
@@ -42,6 +44,11 @@ class _HamburgerIconState extends State<HamburgerIcon> {
     // print('uid:$uid');
   }
 
+  Future<void> clearUser() async {
+    final sp = await SharedPreferences.getInstance();
+    sp.clear();
+  }
+
   Future<void> fetchLawyerId() async {
     final user = FirebaseAuth.instance.currentUser;
     final userDoc =
@@ -67,6 +74,7 @@ class _HamburgerIconState extends State<HamburgerIcon> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     return Drawer(
       backgroundColor: Theme.of(context).canvasColor,
       child: Container(
@@ -79,10 +87,22 @@ class _HamburgerIconState extends State<HamburgerIcon> {
             Padding(
               padding: EdgeInsets.only(left: screenWidth * 0.04),
               child: Row(children: [
-                CircleAvatar(
-                  radius: screenHeight * 0.055,
-                  backgroundImage: const NetworkImage(
-                      "https://picsum.photos/id/237/200/300"),
+                CachedNetworkImage(
+                  imageUrl: userProvider.user.profile == ''
+                      ? "https://picsum.photos/id/237/200/300"
+                      : userProvider.user.profile,
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 SizedBox(
                   width: screenWidth * 0.03,
@@ -127,16 +147,6 @@ class _HamburgerIconState extends State<HamburgerIcon> {
             ),
             const SizedBox(
               height: 10,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    return const BareActsPage();
-                  },
-                ));
-              },
-              child: const CustomListTile(title: "Bare acts"),
             ),
             InkWell(
               onTap: () {
@@ -207,13 +217,32 @@ class _HamburgerIconState extends State<HamburgerIcon> {
               },
               child: const CustomListTile(title: "Feedback Page"),
             ),
+            InkWell(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const BareActsPage();
+                }));
+              },
+              child: const CustomListTile(title: "BareActs Pdf"),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const InternShipForm();
+                }));
+              },
+              child: const CustomListTile(title: "Internship Form"),
+            ),
             SizedBox(
               height: screenHeight * 0.05,
             ),
             Padding(
               padding: const EdgeInsets.all(15),
               child: InkWell(
-                onTap: () {
+                onTap: () async {
+                  clearUser();
                   FirebaseAuth.instance.signOut();
                   Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                     MaterialPageRoute(
@@ -225,6 +254,12 @@ class _HamburgerIconState extends State<HamburgerIcon> {
                       return false;
                     },
                   );
+
+                  // await FirebaseFirestore.instance
+                  //     .collection('lawyers')
+                  //     .doc('bpv6pevm3Ba8jmLK6UQaUK9xnaE3')
+                  //     .get()
+                  //     .then((value) => print(value.data()));
                 },
                 child: Container(
                   height: screenHeight * 0.055,

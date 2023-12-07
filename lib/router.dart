@@ -14,7 +14,7 @@ import 'package:juridentt/calender/calendar.dart';
 import 'package:juridentt/features/teams/sharedcases.dart';
 import 'package:juridentt/hamburgerMenu/contacUs.dart';
 import 'package:juridentt/hamburgerMenu/editprofile.dart';
-// import 'package:juridentt/home.dart';
+import 'package:juridentt/main.dart';
 import 'package:juridentt/onboarding/onboarding1.dart';
 import 'package:juridentt/onboarding/onboarding2.dart';
 import 'package:juridentt/onboarding/onboarding3.dart';
@@ -28,17 +28,21 @@ import 'authentication/lawyer/signup/signup_otp.dart';
 import 'hamburgerMenu/about_us.dart';
 import 'hamburgerMenu/faq.dart';
 import 'hamburgerMenu/feedback.dart';
-import 'hamburgerMenu/hamburger_icon.dart';
 import 'hamburgerMenu/terms.dart';
 import 'package:juridentt/authentication/general/login.dart' as login;
 import 'package:juridentt/authentication/general/signup.dart' as signup;
-// import 'package:juridentt/client/clientsearchpage.dart' as clienthomepage;
 import 'package:juridentt/client/clientsearchpage.dart';
 
 import 'navbar.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
   switch (routeSettings.name) {
+
+    case '/':
+      return MaterialPageRoute(builder: (context) {
+        return const SplashScreen();
+        
+      },settings: routeSettings);
 
     case '/first':
       return MaterialPageRoute(
@@ -120,7 +124,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case '/lawyerhomescreen':
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => PersistentNavbar(),
+        builder: (_) => const PersistentNavbar(),
       );
 
     case '/clientlogin':
@@ -221,7 +225,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case '/homescreen':
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => PersistentNavbar(),
+        builder: (_) => const PersistentNavbar(),
       );
 
     case '/addcase':
@@ -268,11 +272,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (_) => const SharedCasesPage(),
       );
 
-    case HamburgerIcon.routename:
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (_) => const HamburgerIcon(),
-      );
+    // case HamburgerIcon.routename:
+    //   return MaterialPageRoute(
+    //     settings: routeSettings,
+    //     builder: (_) => const HamburgerIcon(),
+    //   );
 
     case TermsAndConditions.routeName:
       return MaterialPageRoute(
@@ -325,7 +329,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case 'clientsearchpage':
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const HomePage(),
+        builder: (_) =>  const HomePage(),
       );
 
      case 'chat page':

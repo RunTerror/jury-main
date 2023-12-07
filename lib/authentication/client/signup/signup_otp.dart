@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+
 import 'package:flutter/material.dart';
 import 'package:juridentt/constants.dart';
 import 'package:juridentt/resources/auth.dart';
@@ -48,6 +49,7 @@ class _SignUpOtpClientState extends State<SignUpOtpClient> {
   }
 
   void signUpUser() async {
+    // log('Signup started');
     String resp = await Auth().clientregisterUser(
       profile: '',
       name: widget.username,
