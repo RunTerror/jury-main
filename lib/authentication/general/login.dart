@@ -1,11 +1,13 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:another_flushbar/flushbar.dart';
-import 'package:flutter/gestures.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/general/verification_page.dart';
 import 'package:juridentt/constants.dart';
+import 'package:juridentt/models/user.dart';
 import 'package:juridentt/provider1.dart';
 import 'package:juridentt/resources/auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +15,7 @@ import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   final String userType;
-  const LoginScreen({Key? key,required this.userType}) : super(key: key);
+  const LoginScreen({Key? key, required this.userType}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -55,13 +57,13 @@ class _LoginScreenState extends State<LoginScreen> {
         password: passwordController.text.trim());
 
     if (res == 'success') {
-      
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return const EmailVerification(usertype: 'client',);
-          },
-        ));
-
+      Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          return const EmailVerification(
+            usertype: 'client',
+          );
+        },
+      ));
     }
     if (res == 'Incorrect password. Please try again.') {
       showDialog(
@@ -98,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('OK', style: Constants.lightBlackBold),
                 onPressed: () {
-                   Navigator.pop(context);
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -130,6 +132,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late UserProvider _userProvider;
 
+  void _checkUserType() async {
+    await FirebaseFirestore.instance
+        .collection('lawyers')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => {
+              Provider.of<UserProvider>(context, listen: false).setUser(
+                Info.fromDocumentSnapshot(value),
+              )
+            });
+  }
+
   void loginUser() async {
     _userProvider.toogleLoginLoading();
     String res = await Auth().lawyerloginUser(
@@ -138,12 +152,15 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (res == 'success') {
+      _checkUserType();
       _userProvider.toogleLoginLoading();
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return const EmailVerification(usertype: 'lawyer',);
+            return const EmailVerification(
+              usertype: 'lawyer',
+            );
           },
         ),
         (route) => false,
@@ -225,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     _userProvider = Provider.of<UserProvider>(context);
     final size = MediaQuery.of(context).size;
-    final themeProvider=Provider.of<ThemeProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -234,9 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Container(
             height: size.height,
             width: size.width,
-            decoration: const BoxDecoration(
-              
-            ),
+            decoration: const BoxDecoration(),
             child: Form(
               key: _formKey,
               child: Stack(
@@ -298,21 +313,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                     padding: EdgeInsets.only(bottom: 160.h),
                                     child: Row(
                                       children: [
-                                        const SizedBox(height: 20,),
-                                   widget.userType=='lawyer'?     Text(
-                                              "Join as Lawyer",
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: Constants
-                                                  .satoshiYellowNormal22,
-                                            ): 
-                                              Text(
-                                              "Join as Client",
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.left,
-                                              style: Constants
-                                                  .satoshiYellowNormal22,
-                                            ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        widget.userType == 'lawyer'
+                                            ? Text(
+                                                "Join as Lawyer",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: Constants
+                                                    .satoshiYellowNormal22,
+                                              )
+                                            : Text(
+                                                "Join as Client",
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.left,
+                                                style: Constants
+                                                    .satoshiYellowNormal22,
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -595,7 +613,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ],
                             ),
-                            
                             Container(
                               width: double.infinity,
                               alignment: Alignment.center,

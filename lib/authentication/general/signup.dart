@@ -3,12 +3,14 @@
 import 'dart:developer';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:juridentt/addcase/provider.dart';
 import 'package:juridentt/authentication/client/login/login.dart';
 import 'package:juridentt/authentication/general/signupverification.dart';
 import 'package:juridentt/constants.dart';
+import 'package:juridentt/models/user.dart';
 import 'package:juridentt/navbar.dart';
 import 'package:juridentt/provider1.dart';
 import 'package:juridentt/resources/auth.dart';
@@ -182,7 +184,19 @@ class _SignupScreenState extends State<SignupScreen> {
   //  await emailAuth.sendOtp(recipientMail: 'bansalabhishek7411@gmail.com').then((value) => print(value));
 
   // }
-
+  
+    void _checkUserType() async {
+   
+      await FirebaseFirestore.instance
+          .collection('lawyers')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get()
+          .then((value) => {
+                Provider.of<UserProvider>(context, listen: false).setUser(
+                  Info.fromDocumentSnapshot(value),
+                )
+              });
+  }
   void signUpUser() async {
     log('laweyer signup started');
     userProvider.toogleLoading();

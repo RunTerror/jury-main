@@ -414,6 +414,7 @@ import 'package:juridentt/navbar.dart';
 import 'package:juridentt/navbar/navbar_provider.dart';
 import 'package:juridentt/profile_provider.dart';
 import 'package:juridentt/router.dart';
+import 'package:open_file/open_file.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -542,7 +543,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _getUserType();
     Timer(
-      const Duration(seconds: 2),
+      const Duration(milliseconds: 1500),
       () {
         checkFirstTime();
       },
@@ -550,25 +551,30 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkFirstTime() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final ispresented = prefs.getBool('firstTime');
-    print(ispresented);
-    if (context.mounted) {
-      if (ispresented == null || ispresented == false) {
-        await prefs.setBool('firstTime', true);
-        // ignore: use_build_context_synchronously
+    final sp = await SharedPreferences.getInstance();
+    final result = sp.getBool('shown');
+    print(result);
+    if (result == null) {
+      navigateOnboarding(context);
+      await sp.setBool('shown', true);
+    } else {
+      navigateLanding(context);
+    }
+  }
+
+  navigateOnboarding(BuildContext context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const OnboardingScree()),
     );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LandingScreen(userType: userType)),
-      );
-    }
-    }
+  }
+
+  navigateLanding(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => LandingScreen(userType: userType)),
+    );
   }
 
   _getUserType() async {
@@ -633,7 +639,7 @@ class _OnboardingScreeState extends State<OnboardingScree> {
 
   final function = () {
     _pageController.nextPage(
-        duration: Duration(milliseconds: 100), curve: Curves.decelerate);
+        duration: Duration(milliseconds: 500), curve: Curves.linear);
   };
 
   @override
@@ -660,18 +666,20 @@ class _OnboardingScreeState extends State<OnboardingScree> {
               const OnboardingPage3(),
             ],
           ),
-         _currentPage==2? Container(): Positioned(
-            top: 50,
-            right: 10,
-            child: InkWell(
-                onTap: () {
-                  _pageController.jumpToPage(2);
-                },
-                child:const Text(
-                  'Skip',
-                  style: TextStyle(color: Colors.white),
-                )),
-          ),
+          _currentPage == 2
+              ? Container()
+              : Positioned(
+                  top: 50,
+                  right: 10,
+                  child: InkWell(
+                      onTap: () {
+                        _pageController.jumpToPage(2);
+                      },
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
           Positioned(
             bottom: h / 7,
             left: (w / 2) - 30,
@@ -1024,7 +1032,7 @@ class _LawyerClientLoginState extends State<LawyerClientLogin> {
                               color: Constants.yellow,
                               fontWeight: FontWeight.w600),
                         ),
-                        Gap(30),
+                        const Gap(30),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [

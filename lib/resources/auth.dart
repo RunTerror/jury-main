@@ -177,6 +177,8 @@ class Auth {
          sharedPreferences.setString('userType', 'lawyer');
          final user=sharedPreferences.get('userType');
          print(user);
+
+         
       } else {
         res = 'Please enter email and password';
       }
